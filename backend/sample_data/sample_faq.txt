@@ -1,0 +1,150 @@
+Frequently Asked Questions (FAQ)
+
+Course Access & Enrollment
+
+Q: How do I access the course?
+A: After purchasing, you'll receive an email with your login credentials. Log in at dashboard.example.com to access all course materials.
+
+Q: How long do I have access?
+A: You have lifetime access to all course materials, including future updates.
+
+Q: Can I download the videos?
+A: Yes! All video lectures are downloadable. Click the download icon below each video.
+
+Q: Is there a mobile app?
+A: Not yet, but the website is fully mobile-responsive and works great on phones and tablets.
+
+Technical Issues
+
+Q: The video won't play. What should I do?
+A: Try these steps:
+1. Refresh the page
+2. Clear your browser cache
+3. Try a different browser
+4. Check your internet connection
+If issues persist, contact support@example.com
+
+Q: I can't access the bonus materials.
+A: Bonus materials are in the Resources section. Click "Resources" in the top menu, then "Bonus Materials."
+
+Q: The practice exercises aren't loading.
+A: Make sure you've completed the prerequisite lessons. Exercises unlock after completing the previous module.
+
+Payment & Billing
+
+Q: What payment methods do you accept?
+A: We accept all major credit cards, PayPal, and Apple Pay through our secure payment processor.
+
+Q: Can I get a refund?
+A: Yes! We offer a 30-day money-back guarantee. Email refunds@example.com with your order number.
+
+Q: Do you offer payment plans?
+A: Yes! Select "Payment Plan" at checkout for 3 monthly installments.
+
+Q: I was charged twice. Help!
+A: Contact billing@example.com immediately with your transaction details. We'll resolve it within 24 hours.
+
+Course Content
+
+Q: Do I need prior experience?
+A: No prior programming experience required! We start from the absolute basics.
+
+Q: What software do I need?
+A: You'll need:
+- Python 3.10 or higher (free)
+- A code editor like VS Code (free)
+- About 2GB of free disk space
+
+Q: How long does the course take?
+A: Most students complete it in 6-8 weeks at 5-10 hours per week. But you can go at your own pace!
+
+Q: Are there quizzes or tests?
+A: Yes! Each module has practice exercises and a quiz. They're optional but highly recommended.
+
+Q: What's covered in Module 3?
+A: Module 3 covers Advanced Python Concepts including:
+- Object-Oriented Programming (OOP)
+- Decorators and generators
+- Error handling and exceptions
+- Working with files and databases
+- Best practices and code organization
+
+Certificates & Completion
+
+Q: Do I get a certificate?
+A: Yes! After completing all modules and passing the final project, you'll receive a certificate of completion.
+
+Q: Is the certificate accredited?
+A: This is a professional certificate, not an academic degree. It demonstrates your skills to employers.
+
+Q: How do I download my certificate?
+A: Go to Dashboard → Certificates. Click "Download" once you've completed all requirements.
+
+Community & Support
+
+Q: Is there a student community?
+A: Yes! Join our Discord server (link in welcome email) to connect with other students and instructors.
+
+Q: How quickly will I get support?
+A: We typically respond within 24 hours on weekdays. Premium members get priority support within 6 hours.
+
+Q: Can I schedule a 1-on-1 call?
+A: Premium members get 2 live coaching calls per month. Book through your dashboard.
+
+Project & Assignments
+
+Q: Are the projects difficult?
+A: Projects are designed to match your skill level. Start with guided projects, then move to independent ones.
+
+Q: Can I submit projects for review?
+A: Yes! Upload your project in the Assignments section. You'll get feedback within 3-5 business days.
+
+Q: What if I'm stuck on an assignment?
+A: Try these resources:
+1. Rewatch the relevant video lessons
+2. Check the hints in the assignment description
+3. Ask in the Discord community
+4. Contact support for help
+
+Q: Can I work on projects with others?
+A: Individual assignments must be your own work, but group projects are encouraged! Find partners in Discord.
+
+Career Support
+
+Q: Will this course help me get a job?
+A: This course teaches practical skills employers want. Many graduates have landed jobs, but we can't guarantee employment.
+
+Q: Do you help with job placement?
+A: We provide career resources, resume reviews, and interview prep. Premium members get 1-on-1 career coaching.
+
+Q: Can I add this to my LinkedIn?
+A: Absolutely! Add your certificate to LinkedIn and showcase your projects on GitHub.
+
+Updates & Changes
+
+Q: Do you update the course?
+A: Yes! We add new content quarterly. All updates are free for existing students.
+
+Q: Will I be notified of updates?
+A: Yes! You'll get an email when new content is added.
+
+Account Issues
+
+Q: I forgot my password.
+A: Click "Forgot Password" on the login page. Check your email for reset instructions.
+
+Q: How do I change my email address?
+A: Go to Settings → Account → Email. Enter your new email and verify it.
+
+Q: Can I share my account with others?
+A: No, accounts are for individual use only. Each person needs their own account.
+
+Still Have Questions?
+
+If your question isn't answered here:
+1. Ask in the chat (bottom right corner)
+2. Email support@example.com
+3. Join our Discord community
+4. Check our knowledge base at help.example.com
+
+We're here to help you succeed!

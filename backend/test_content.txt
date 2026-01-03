@@ -1,0 +1,17 @@
+Course Module 1: Introduction to AI Support
+
+Welcome to the AI Support course! In this module, you'll learn:
+
+1. What is AI-powered customer support?
+AI-powered support uses machine learning to automatically answer common questions and help customers faster.
+
+2. Benefits of AI support:
+- 24/7 availability
+- Instant responses
+- Reduced support costs
+- Better customer satisfaction
+
+3. How RAG works:
+RAG (Retrieval-Augmented Generation) combines vector search with language models to provide accurate, context-aware responses based on your course materials.
+
+For questions about this module, contact support@example.com
