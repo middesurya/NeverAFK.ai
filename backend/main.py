@@ -91,21 +91,17 @@ async def chat(message: ChatMessage):
         conversation_history=[]
     )
 
-    try:
-        await db.save_conversation(
-            creator_id=message.creator_id,
-            student_message=message.message,
-            ai_response=result["response"],
-            sources=result["sources"],
-            should_escalate=result["should_escalate"]
-        )
-    except Exception as e:
-        print(f"Warning: Could not save conversation to database: {e}")
+    # Save conversation (works with or without database)
+    await db.save_conversation(
+        creator_id=message.creator_id,
+        student_message=message.message,
+        ai_response=result["response"],
+        sources=result["sources"],
+        should_escalate=result["should_escalate"]
+    )
 
-    try:
-        await db.update_credit_usage(message.creator_id, 1)
-    except Exception as e:
-        print(f"Warning: Could not update credit usage: {e}")
+    # Update credit usage
+    await db.update_credit_usage(message.creator_id, 1)
 
     return ChatResponse(
         response=result["response"],
@@ -123,7 +119,11 @@ async def get_conversations(creator_id: str, limit: int = 50):
 
 @app.get("/health")
 async def health_check():
-    return {"status": "healthy"}
+    return {
+        "status": "healthy",
+        "database": "connected" if db.is_connected() else "local_mode",
+        "mode": "production" if db.is_connected() else "development"
+    }
 
 
 if __name__ == "__main__":
