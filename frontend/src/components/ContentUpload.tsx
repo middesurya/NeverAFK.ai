@@ -4,6 +4,7 @@ import { useState } from "react";
 
 interface ContentUploadProps {
   creatorId: string;
+  authToken?: string | null;
 }
 
 // Icons
@@ -38,7 +39,7 @@ const SpinnerIcon = () => (
   </svg>
 );
 
-export default function ContentUpload({ creatorId }: ContentUploadProps) {
+export default function ContentUpload({ creatorId, authToken }: ContentUploadProps) {
   const [file, setFile] = useState<File | null>(null);
   const [contentType, setContentType] = useState<string>("pdf");
   const [title, setTitle] = useState<string>("");
@@ -97,8 +98,14 @@ export default function ContentUpload({ creatorId }: ContentUploadProps) {
     formData.append("title", title || file.name);
 
     try {
+      const headers: Record<string, string> = {};
+      if (authToken) {
+        headers["Authorization"] = `Bearer ${authToken}`;
+      }
+
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/upload/content`, {
         method: "POST",
+        headers,
         body: formData,
       });
 
