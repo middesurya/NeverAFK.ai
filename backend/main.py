@@ -18,7 +18,11 @@ app = FastAPI(title="Creator Support AI Backend")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=[
+        "http://localhost:3000",
+        "https://never-afk-ai-lngm.vercel.app",
+        "https://neverafk.ai",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
