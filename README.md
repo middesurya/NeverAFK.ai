@@ -2,6 +2,14 @@
 
 An AI-powered customer support system that understands your course content and answers student questions automatically using RAG (Retrieval-Augmented Generation).
 
+## Live Demo
+
+| Link | Description |
+|------|-------------|
+| [Live Demo](https://never-afk-ai-lngm.vercel.app/demo) | Try the AI chat |
+| [Landing Page](https://never-afk-ai-lngm.vercel.app) | Product homepage |
+| [API Health](https://neverafkai-production.up.railway.app/health) | Backend status |
+
 ## Features
 
 - **Content-Aware AI**: Indexes course videos, PDFs, and text to answer specific content questions
@@ -204,30 +212,44 @@ Retrieve conversation history
 
 ## Deployment
 
-### Backend (FastAPI)
+### Current Production Setup
 
-Deploy to services like:
+| Component | Service | URL |
+|-----------|---------|-----|
+| Frontend | Vercel | https://never-afk-ai-lngm.vercel.app |
+| Backend | Railway | https://neverafkai-production.up.railway.app |
+| Database | Supabase | PostgreSQL (managed) |
+| Vector Store | Pinecone | Cloud-hosted |
+
+### Backend (FastAPI) - Railway
+
+1. Create Railway project
+2. Set root directory to `/backend`
+3. Add environment variables:
+   - `OPENAI_API_KEY`
+   - `PINECONE_API_KEY`
+   - `SUPABASE_URL`
+   - `SUPABASE_ANON_KEY`
+4. Deploy via GitHub integration
+
+### Frontend (Next.js) - Vercel
+
+1. Create Vercel project
+2. Set root directory to `frontend`
+3. Add environment variable:
+   - `NEXT_PUBLIC_API_URL` = Railway backend URL
+4. Deploy via GitHub integration
+
+### Alternative Deployment Options
+
+**Backend:**
 - Render
-- Railway
 - AWS Lambda (with Mangum)
 - Google Cloud Run
 
-### Frontend (Next.js)
-
-Deploy to:
-- Vercel (recommended)
+**Frontend:**
 - Netlify
 - AWS Amplify
-
-### Database
-
-- Use Supabase (managed PostgreSQL)
-- Or self-host PostgreSQL
-
-### Vector Store
-
-- Use Pinecone (cloud-hosted)
-- Or Supabase pgvector (self-hosted)
 
 ## Pricing Strategy
 
