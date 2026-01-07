@@ -32,6 +32,13 @@ export default function AuthCallbackPage() {
   useEffect(() => {
     const handleCallback = async () => {
       try {
+        // Check if Supabase is configured
+        if (!supabase) {
+          setStatus('error');
+          setMessage('Authentication is not configured. Please contact support.');
+          return;
+        }
+
         // Check for error in URL params
         const error = searchParams.get('error');
         const errorDescription = searchParams.get('error_description');
