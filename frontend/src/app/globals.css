@@ -194,6 +194,7 @@ body {
     mask-composite: exclude;
     opacity: 0.5;
     transition: opacity var(--transition-base);
+    pointer-events: none;
   }
 
   .border-glow:hover::before {
@@ -488,11 +489,13 @@ body {
       linear-gradient(to right, var(--color-border-light) 1px, transparent 1px),
       linear-gradient(to bottom, var(--color-border-light) 1px, transparent 1px);
     background-size: 60px 60px;
+    pointer-events: none;
   }
 
   .bg-dots {
     background-image: radial-gradient(var(--color-border) 1px, transparent 1px);
     background-size: 20px 20px;
+    pointer-events: none;
   }
 
   .bg-noise {

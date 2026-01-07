@@ -404,6 +404,40 @@ Watch these metrics:
 - [ ] Cost alerts configured
 - [ ] Documentation updated
 - [ ] Team access configured
+- [ ] **⚠️ SMTP configured for Supabase emails** (see below)
+
+## Email Configuration (CRITICAL for Production)
+
+Supabase's built-in email service has strict rate limits (3-4 emails/hour) and is NOT suitable for production.
+
+### Set Up Custom SMTP
+
+1. Go to Supabase Dashboard → Project Settings → Authentication → SMTP Settings
+2. Click "Set up SMTP"
+3. Enter your SMTP credentials from one of these providers:
+
+| Provider | Free Tier | Sign Up |
+|----------|-----------|---------|
+| **Resend** | 3,000/month | https://resend.com |
+| **SendGrid** | 100/day | https://sendgrid.com |
+| **Mailgun** | 5,000/month (3mo) | https://mailgun.com |
+| **Postmark** | 100/month | https://postmarkapp.com |
+
+### Required SMTP Settings
+```
+SMTP Host: (from provider)
+SMTP Port: 587 (or 465 for SSL)
+SMTP User: (from provider)
+SMTP Password: (from provider)
+Sender Email: noreply@yourdomain.com
+Sender Name: Creator Support AI
+```
+
+### Emails Affected
+- Signup confirmation
+- Password reset
+- Magic link login
+- Email change verification
 
 ## Support
 

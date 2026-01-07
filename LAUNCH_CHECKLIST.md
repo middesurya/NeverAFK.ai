@@ -14,6 +14,11 @@ Complete checklist for launching your RAG-powered support tool.
 - [ ] SSL certificates active
 - [ ] CORS properly configured
 - [ ] Rate limiting enabled
+- [ ] **⚠️ CRITICAL: Set up custom SMTP for Supabase emails**
+  - Supabase built-in email has rate limits (3-4/hour) - NOT for production!
+  - Go to: Supabase Dashboard → Project Settings → Authentication → SMTP Settings
+  - Recommended providers: Resend (3K free/mo), SendGrid, Mailgun
+  - Required for: signup confirmations, password resets, magic links
 
 ### Testing
 - [ ] Upload test content (PDF, video, text)

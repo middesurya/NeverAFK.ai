@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
 import ContentUpload from "@/components/ContentUpload";
 import EmbedWidgetGenerator from "@/components/EmbedWidget";
 
@@ -61,18 +63,40 @@ const HomeIcon = () => (
 type Tab = "overview" | "conversations" | "upload" | "embed";
 
 export default function DashboardPage() {
-  const creatorId = "demo-creator";
+  const router = useRouter();
+  const { user, loading: authLoading, signOut, getAccessToken } = useAuth();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedTab, setSelectedTab] = useState<Tab>("overview");
 
+  // Use authenticated user's ID, fallback to demo-creator for unauthenticated demo
+  const creatorId = user?.id || "demo-creator";
+
+  // Redirect to login if not authenticated (after auth check completes)
   useEffect(() => {
-    fetchConversations();
-  }, []);
+    if (!authLoading && !user) {
+      router.push("/login");
+    }
+  }, [user, authLoading, router]);
+
+  useEffect(() => {
+    if (user) {
+      fetchConversations();
+    }
+  }, [user]);
 
   const fetchConversations = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/conversations/${creatorId}`);
+      const token = getAccessToken();
+      const headers: Record<string, string> = {};
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/conversations/${creatorId}`,
+        { headers }
+      );
       const data = await response.json();
       setConversations(data.conversations || []);
     } catch (error) {
@@ -81,6 +105,30 @@ export default function DashboardPage() {
       setLoading(false);
     }
   };
+
+  const handleSignOut = async () => {
+    await signOut();
+    router.push("/");
+  };
+
+  // Show loading state while checking auth
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-[var(--color-bg-primary)] flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-500 to-cyan-500 flex items-center justify-center mx-auto mb-4 animate-pulse">
+            <SparklesIcon />
+          </div>
+          <p className="text-[var(--color-text-secondary)]">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Don't render dashboard if not authenticated
+  if (!user) {
+    return null;
+  }
 
   const tabs = [
     { id: "overview" as Tab, label: "Overview", icon: <HomeIcon /> },
@@ -126,12 +174,15 @@ export default function DashboardPage() {
             </Link>
 
             <div className="flex items-center gap-4">
-              <Link href="/demo" className="btn btn-ghost text-sm">
-                View Demo
-              </Link>
+              <span className="text-sm text-[var(--color-text-tertiary)] hidden sm:block">
+                {user.email}
+              </span>
               <Link href="/pricing" className="btn btn-secondary text-sm">
                 Upgrade
               </Link>
+              <button onClick={handleSignOut} className="btn btn-ghost text-sm">
+                Sign Out
+              </button>
             </div>
           </div>
         </div>
@@ -353,7 +404,7 @@ export default function DashboardPage() {
           )}
 
           {selectedTab === "upload" && (
-            <ContentUpload creatorId={creatorId} />
+            <ContentUpload creatorId={creatorId} authToken={getAccessToken()} />
           )}
 
           {selectedTab === "embed" && (
