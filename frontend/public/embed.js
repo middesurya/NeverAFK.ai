@@ -292,7 +292,7 @@
   var messagesContainer = document.getElementById('creator-ai-messages');
 
   var isLoading = false;
-  var apiUrl = scriptTag.getAttribute('data-api-url') || 'https://neverafk-ai-production.up.railway.app';
+  var apiUrl = scriptTag.getAttribute('data-api-url') || 'https://neverafkai-production.up.railway.app';
 
   // Toggle chat
   button.addEventListener('click', function() {
