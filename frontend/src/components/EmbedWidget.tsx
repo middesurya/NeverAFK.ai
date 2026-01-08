@@ -35,7 +35,7 @@ export default function EmbedWidgetGenerator({ creatorId }: EmbedWidgetGenerator
 <script>
   (function() {
     var script = document.createElement('script');
-    script.src = 'https://your-domain.com/embed.js';
+    script.src = 'https://never-afk-ai-lngm.vercel.app/embed.js';
     script.setAttribute('data-creator-id', '${creatorId}');
     script.setAttribute('data-position', '${position}');
     script.setAttribute('data-color', '${primaryColor}');
@@ -218,9 +218,9 @@ export default function EmbedWidgetGenerator({ creatorId }: EmbedWidgetGenerator
             <span>The chat widget will appear automatically on your site</span>
           </li>
         </ol>
-        <div className="mt-4 p-3 rounded-lg bg-amber-500/10 border border-amber-500/30">
-          <p className="text-sm text-amber-400">
-            <strong>Note:</strong> Replace <code className="bg-[var(--color-bg-tertiary)] px-1 py-0.5 rounded">your-domain.com</code> with your actual deployment URL after deploying.
+        <div className="mt-4 p-3 rounded-lg bg-green-500/10 border border-green-500/30">
+          <p className="text-sm text-green-400">
+            <strong>Ready to use!</strong> The widget code is configured to work with your account. Just copy and paste it into your website.
           </p>
         </div>
       </div>
