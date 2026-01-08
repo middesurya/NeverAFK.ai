@@ -1,9 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/lib/supabase';
 
 const SparklesIcon = () => (
   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -37,29 +37,81 @@ const LoadingSpinner = () => (
   </svg>
 );
 
-export default function LoginPage() {
-  const router = useRouter();
-  const { signIn, resetPassword } = useAuth();
+const CheckIcon = () => (
+  <svg className="w-8 h-8 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+  </svg>
+);
 
-  const [email, setEmail] = useState('');
+export default function ResetPasswordPage() {
+  const router = useRouter();
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [resetSent, setResetSent] = useState(false);
-  const [isResetting, setIsResetting] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [isValidSession, setIsValidSession] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    // Check if we have a valid recovery session
+    const checkSession = async () => {
+      if (!supabase) {
+        setError('Authentication is not configured.');
+        setIsValidSession(false);
+        return;
+      }
+
+      // Supabase will automatically handle the recovery token from the URL hash
+      const { data: { session }, error } = await supabase.auth.getSession();
+
+      if (error) {
+        setError(error.message);
+        setIsValidSession(false);
+      } else if (session) {
+        setIsValidSession(true);
+      } else {
+        setError('Invalid or expired reset link. Please request a new one.');
+        setIsValidSession(false);
+      }
+    };
+
+    checkSession();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+
     setIsLoading(true);
 
     try {
-      const { error } = await signIn(email, password);
+      if (!supabase) {
+        setError('Authentication is not configured.');
+        return;
+      }
+
+      const { error } = await supabase.auth.updateUser({ password });
+
       if (error) {
         setError(error.message);
       } else {
-        router.push('/dashboard');
+        setSuccess(true);
+        // Redirect to login after 2 seconds
+        setTimeout(() => {
+          router.push('/login');
+        }, 2000);
       }
     } catch {
       setError('An unexpected error occurred. Please try again.');
@@ -68,27 +120,60 @@ export default function LoginPage() {
     }
   };
 
-  const handleForgotPassword = async () => {
-    if (!email) {
-      setError('Please enter your email address first');
-      return;
-    }
-    setError(null);
-    setIsResetting(true);
+  // Show loading while checking session
+  if (isValidSession === null) {
+    return (
+      <div className="min-h-screen bg-[var(--color-bg-primary)] flex items-center justify-center">
+        <div className="text-center">
+          <LoadingSpinner />
+          <p className="mt-4 text-[var(--color-text-secondary)]">Verifying reset link...</p>
+        </div>
+      </div>
+    );
+  }
 
-    try {
-      const { error } = await resetPassword(email);
-      if (error) {
-        setError(error.message);
-      } else {
-        setResetSent(true);
-      }
-    } catch {
-      setError('Failed to send reset email. Please try again.');
-    } finally {
-      setIsResetting(false);
-    }
-  };
+  // Show success message
+  if (success) {
+    return (
+      <div className="min-h-screen bg-[var(--color-bg-primary)] flex items-center justify-center">
+        <div className="text-center px-6">
+          <div className="w-16 h-16 rounded-full bg-[var(--color-bg-secondary)] flex items-center justify-center mx-auto mb-6">
+            <CheckIcon />
+          </div>
+          <h1 className="text-xl font-bold text-[var(--color-text-primary)] mb-2">
+            Password Updated!
+          </h1>
+          <p className="text-[var(--color-text-secondary)] mb-6">
+            Your password has been successfully reset. Redirecting to login...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error if invalid session
+  if (!isValidSession) {
+    return (
+      <div className="min-h-screen bg-[var(--color-bg-primary)] flex items-center justify-center">
+        <div className="text-center px-6">
+          <div className="w-16 h-16 rounded-full bg-[var(--color-bg-secondary)] flex items-center justify-center mx-auto mb-6">
+            <svg className="w-8 h-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </div>
+          <h1 className="text-xl font-bold text-[var(--color-text-primary)] mb-2">
+            Invalid Reset Link
+          </h1>
+          <p className="text-[var(--color-text-secondary)] mb-6 max-w-md">
+            {error || 'This password reset link is invalid or has expired.'}
+          </p>
+          <Link href="/login" className="btn btn-primary px-6 py-2">
+            Back to Login
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[var(--color-bg-primary)] relative overflow-hidden flex items-center justify-center">
@@ -99,13 +184,13 @@ export default function LoginPage() {
       {/* Subtle grid pattern */}
       <div className="absolute inset-0 bg-grid opacity-30" />
 
-      {/* Back to Home */}
+      {/* Back to Login */}
       <Link
-        href="/"
+        href="/login"
         className="absolute top-6 left-6 flex items-center gap-2 text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)] transition-colors z-20"
       >
         <ArrowLeftIcon />
-        Back to Home
+        Back to Login
       </Link>
 
       {/* Main Content */}
@@ -118,14 +203,14 @@ export default function LoginPage() {
             </div>
           </Link>
           <h1 className="text-2xl font-bold text-[var(--color-text-primary)] mb-2">
-            Welcome back
+            Set New Password
           </h1>
           <p className="text-[var(--color-text-secondary)]">
-            Sign in to your Creator Support AI account
+            Enter your new password below
           </p>
         </div>
 
-        {/* Login Form */}
+        {/* Reset Password Form */}
         <div className="card border-glow p-8">
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Error Message */}
@@ -140,39 +225,10 @@ export default function LoginPage() {
               </div>
             )}
 
-            {/* Reset Email Sent Message */}
-            {resetSent && (
-              <div className="p-4 rounded-lg bg-green-500/10 border border-green-500/20 animate-scale-in">
-                <p className="text-sm text-green-400 flex items-center gap-2">
-                  <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  Password reset email sent! Check your inbox.
-                </p>
-              </div>
-            )}
-
-            {/* Email Field */}
-            <div className="space-y-2">
-              <label htmlFor="email" className="block text-sm font-medium text-[var(--color-text-secondary)]">
-                Email address
-              </label>
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="input"
-                placeholder="you@example.com"
-                required
-                autoComplete="email"
-              />
-            </div>
-
-            {/* Password Field */}
+            {/* New Password Field */}
             <div className="space-y-2">
               <label htmlFor="password" className="block text-sm font-medium text-[var(--color-text-secondary)]">
-                Password
+                New Password
               </label>
               <div className="relative">
                 <input
@@ -181,9 +237,10 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="input pr-12"
-                  placeholder="Enter your password"
+                  placeholder="Enter new password"
                   required
-                  autoComplete="current-password"
+                  minLength={6}
+                  autoComplete="new-password"
                 />
                 <button
                   type="button"
@@ -195,16 +252,31 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {/* Forgot Password */}
-            <div className="flex justify-end">
-              <button
-                type="button"
-                onClick={handleForgotPassword}
-                disabled={isResetting}
-                className="text-sm text-[var(--color-accent-light)] hover:text-[var(--color-accent)] transition-colors disabled:opacity-50"
-              >
-                {isResetting ? 'Sending...' : 'Forgot password?'}
-              </button>
+            {/* Confirm Password Field */}
+            <div className="space-y-2">
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-[var(--color-text-secondary)]">
+                Confirm New Password
+              </label>
+              <div className="relative">
+                <input
+                  id="confirmPassword"
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="input pr-12"
+                  placeholder="Confirm new password"
+                  required
+                  minLength={6}
+                  autoComplete="new-password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)] transition-colors"
+                >
+                  {showConfirmPassword ? <EyeOffIcon /> : <EyeIcon />}
+                </button>
+              </div>
             </div>
 
             {/* Submit Button */}
@@ -216,39 +288,14 @@ export default function LoginPage() {
               {isLoading ? (
                 <>
                   <LoadingSpinner />
-                  Signing in...
+                  Updating password...
                 </>
               ) : (
-                'Sign in'
+                'Update Password'
               )}
             </button>
           </form>
-
-          {/* Divider */}
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-[var(--color-border)]" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-[var(--color-bg-secondary)] px-3 text-[var(--color-text-muted)]">
-                New to Creator Support AI?
-              </span>
-            </div>
-          </div>
-
-          {/* Sign Up Link */}
-          <Link href="/signup" className="btn btn-secondary w-full py-3 text-base">
-            Create an account
-          </Link>
         </div>
-
-        {/* Footer */}
-        <p className="text-center text-xs text-[var(--color-text-muted)] mt-6">
-          By signing in, you agree to our{' '}
-          <a href="#" className="text-[var(--color-accent-light)] hover:underline">Terms of Service</a>
-          {' '}and{' '}
-          <a href="#" className="text-[var(--color-accent-light)] hover:underline">Privacy Policy</a>
-        </p>
       </div>
     </div>
   );

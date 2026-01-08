@@ -11,6 +11,7 @@ interface AuthContextType {
   signUp: (email: string, password: string) => Promise<{ error: AuthError | null }>;
   signIn: (email: string, password: string) => Promise<{ error: AuthError | null }>;
   signOut: () => Promise<void>;
+  resetPassword: (email: string) => Promise<{ error: AuthError | null }>;
   getAccessToken: () => string | null;
   isConfigured: boolean;
 }
@@ -80,6 +81,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await supabase.auth.signOut();
   };
 
+  const resetPassword = async (email: string) => {
+    if (!supabase) {
+      return { error: { message: 'Auth not configured. Please add Supabase credentials.' } as AuthError };
+    }
+    const redirectUrl = `${getBaseUrl()}/auth/reset-password`;
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: redirectUrl,
+    });
+    return { error };
+  };
+
   const getAccessToken = () => {
     return session?.access_token ?? null;
   };
@@ -91,6 +103,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     signUp,
     signIn,
     signOut,
+    resetPassword,
     getAccessToken,
     isConfigured,
   };
