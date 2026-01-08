@@ -10,6 +10,7 @@ interface Message {
 
 interface ChatInterfaceProps {
   creatorId: string;
+  authToken?: string | null;
 }
 
 // Icons
@@ -37,7 +38,7 @@ const UserIcon = () => (
   </svg>
 );
 
-export default function ChatInterface({ creatorId }: ChatInterfaceProps) {
+export default function ChatInterface({ creatorId, authToken }: ChatInterfaceProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -69,11 +70,16 @@ export default function ChatInterface({ creatorId }: ChatInterfaceProps) {
     setIsLoading(true);
 
     try {
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+      };
+      if (authToken) {
+        headers["Authorization"] = `Bearer ${authToken}`;
+      }
+
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/chat`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers,
         body: JSON.stringify({
           message: input,
           creator_id: creatorId,

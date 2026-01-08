@@ -5,6 +5,60 @@ All notable changes to Creator Support AI will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-01-07
+
+### 🔐 Authentication & Production Release
+
+Full user authentication and production deployment!
+
+### Added
+
+#### Authentication System
+- **Supabase Auth Integration**
+  - Complete login/signup flow with email verification
+  - Password reset functionality via email
+  - Session management with automatic refresh
+  - Protected routes requiring authentication
+  - AuthContext provider for React
+
+- **New Pages**
+  - `/login` - User login with email/password
+  - `/signup` - New user registration
+  - `/auth/reset-password` - Password reset flow
+
+#### Production Infrastructure
+- **Deployed to Production**
+  - Frontend on Vercel: https://never-afk-ai-lngm.vercel.app
+  - Backend on Railway: https://neverafkai-production.up.railway.app
+  - Embed widget working on external sites
+
+### Changed
+
+- **CORS Configuration**
+  - Updated to allow all origins (`*`) for embed widget compatibility
+  - Embed widget can now work on any external website
+
+- **Embed Widget**
+  - Fixed API URL to point to Railway production backend
+  - Updated script source to Vercel production URL
+
+- **Demo Page**
+  - Now uses authenticated user's ID when logged in
+  - Falls back to `demo-creator` for unauthenticated demo
+
+- **Backend Auth**
+  - Added JWT token verification middleware
+  - Optional auth for chat/upload (supports both authenticated and demo mode)
+  - User-specific content isolation
+
+### Fixed
+
+- Fixed embed widget CORS errors on external websites
+- Fixed Railway API URL typo (removed hyphen)
+- Fixed demo page showing wrong content for logged-in users
+
+---
+
 ## [1.0.0] - 2026-01-02
 
 ### 🎉 Initial Release

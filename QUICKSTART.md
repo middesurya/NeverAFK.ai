@@ -139,13 +139,156 @@ curl -X POST http://localhost:8000/upload/content \
 - Verify the creator_id matches (`demo-creator-id`)
 - Check backend logs for errors
 
+## Adding the Embed Widget to Your Website (For Beginners)
+
+The embed widget lets you add AI chat support to ANY website. Here's exactly where to put the code:
+
+### Step 1: Get Your Embed Code
+
+1. Go to your dashboard at `https://never-afk-ai-lngm.vercel.app/dashboard`
+2. Click "Embed Widget" tab
+3. Customize colors and position
+4. Copy the code snippet
+
+### Step 2: Add to Your Website
+
+The code looks like this:
+```html
+<!-- Creator Support AI Widget -->
+<script>
+  (function() {
+    var script = document.createElement('script');
+    script.src = 'https://never-afk-ai-lngm.vercel.app/embed.js';
+    script.setAttribute('data-creator-id', 'YOUR-ID-HERE');
+    script.setAttribute('data-position', 'bottom-right');
+    script.setAttribute('data-color', '#8b5cf6');
+    script.setAttribute('data-welcome', 'Hi! How can I help you today?');
+    script.async = true;
+    document.head.appendChild(script);
+  })();
+</script>
+```
+
+### Where to Paste It (By Platform)
+
+#### WordPress
+1. Go to **Appearance > Theme Editor**
+2. Open `footer.php`
+3. Paste the code BEFORE `</body>`
+4. Click "Update File"
+
+**Or use a plugin:**
+1. Install "Insert Headers and Footers" plugin
+2. Go to Settings > Insert Headers and Footers
+3. Paste in "Scripts in Footer" section
+4. Save
+
+#### Squarespace
+1. Go to **Settings > Advanced > Code Injection**
+2. Paste in the "Footer" section
+3. Save
+
+#### Wix
+1. Go to **Settings > Custom Code**
+2. Click "+ Add Custom Code"
+3. Paste the code
+4. Set placement to "Body - end"
+5. Apply to "All pages"
+
+#### Shopify
+1. Go to **Online Store > Themes**
+2. Click "Actions" > "Edit code"
+3. Open `theme.liquid`
+4. Paste BEFORE `</body>`
+5. Save
+
+#### HTML Website
+Open your HTML file and paste before `</body>`:
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Website</title>
+</head>
+<body>
+    <!-- Your website content here -->
+
+    <!-- Paste the embed code HERE, before </body> -->
+    <script>
+      (function() {
+        var script = document.createElement('script');
+        script.src = 'https://never-afk-ai-lngm.vercel.app/embed.js';
+        script.setAttribute('data-creator-id', 'YOUR-ID-HERE');
+        script.setAttribute('data-position', 'bottom-right');
+        script.setAttribute('data-color', '#8b5cf6');
+        script.setAttribute('data-welcome', 'Hi! How can I help you today?');
+        script.async = true;
+        document.head.appendChild(script);
+      })();
+    </script>
+</body>
+</html>
+```
+
+#### React/Next.js
+Add to your `_app.js` or layout component:
+```jsx
+import Script from 'next/script';
+
+export default function App({ Component, pageProps }) {
+  return (
+    <>
+      <Component {...pageProps} />
+      <Script
+        id="creator-ai-widget"
+        strategy="lazyOnload"
+        dangerouslySetInnerHTML={{
+          __html: `
+            (function() {
+              var script = document.createElement('script');
+              script.src = 'https://never-afk-ai-lngm.vercel.app/embed.js';
+              script.setAttribute('data-creator-id', 'YOUR-ID-HERE');
+              script.setAttribute('data-position', 'bottom-right');
+              script.setAttribute('data-color', '#8b5cf6');
+              script.async = true;
+              document.head.appendChild(script);
+            })();
+          `,
+        }}
+      />
+    </>
+  );
+}
+```
+
+### Verify It's Working
+
+1. Refresh your website
+2. Look for the chat button in the corner you selected
+3. Click it and send a test message
+4. You should get a response based on your uploaded content!
+
+### Troubleshooting Embed Widget
+
+**Widget doesn't appear:**
+- Make sure code is before `</body>`, not in `<head>`
+- Clear your browser cache
+- Check browser console for errors (F12)
+
+**"Error" message when chatting:**
+- Verify your creator ID is correct
+- Make sure you've uploaded content first
+- Check if backend is running
+
+---
+
 ## Next Steps
 
 1. **Upload more content**: PDFs, videos, etc.
 2. **Customize the UI**: Edit components in `frontend/src/components/`
 3. **Set up Supabase**: For persistent storage and auth
 4. **Configure billing**: Add Lemon Squeezy integration
-5. **Deploy**: Use Vercel for frontend, Render for backend
+5. **Deploy**: Use Vercel for frontend, Railway for backend
 
 ## Development Tips
 

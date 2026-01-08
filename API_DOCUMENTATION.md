@@ -5,11 +5,22 @@ Complete API reference for integrating with Creator Support AI backend.
 ## Base URL
 
 **Development:** `http://localhost:8000`
-**Production:** `https://your-api-domain.com`
+**Production:** `https://neverafkai-production.up.railway.app`
 
 ## Authentication
 
-Currently, the API uses creator_id for identifying users. Future versions will include JWT-based authentication.
+The API supports two authentication modes:
+
+### 1. JWT Authentication (Recommended for Dashboard)
+Include the Supabase JWT token in the Authorization header:
+```
+Authorization: Bearer <your-jwt-token>
+```
+
+The token is automatically managed by the frontend when users log in via Supabase Auth.
+
+### 2. Creator ID (For Embed Widget / Demo)
+For the embed widget and demo purposes, you can pass `creator_id` directly in the request body. This allows the widget to work on external websites without requiring authentication.
 
 ---
 
@@ -345,9 +356,10 @@ All errors follow this format:
 
 ## CORS
 
-The API supports CORS for the following origins:
-- Development: `http://localhost:3000`
-- Production: Configure via `CORS_ORIGINS` environment variable
+The API allows all origins (`*`) to support the embed widget on any external website:
+- All origins are allowed for cross-origin requests
+- This enables the embed widget to work on any website
+- Note: When `allow_origins=["*"]`, credentials must be set to `false`
 
 ---
 
@@ -517,5 +529,5 @@ For API issues or questions:
 
 ---
 
-*Last Updated: 2026-01-02*
-*API Version: 1.0.0*
+*Last Updated: 2026-01-07*
+*API Version: 1.1.0*
