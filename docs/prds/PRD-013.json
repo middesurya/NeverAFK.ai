@@ -1,0 +1,104 @@
+{
+  "$schema": "prd-tdd-schema-v2",
+  "id": "PRD-013",
+  "title": "Structured Logging",
+  "priority": "P1",
+  "status": "pending",
+  "created": "2026-01-12",
+  "updated": "2026-01-12",
+
+  "goal": {
+    "summary": "Implement structured JSON logging with correlation IDs for request tracing",
+    "user_story": "As a developer, I want structured logs so I can debug production issues effectively",
+    "success_definition": "All logs are JSON with correlation IDs, searchable and parseable",
+    "out_of_scope": ["Log aggregation service", "Log alerting"]
+  },
+
+  "tdd": {
+    "test_first": true,
+    "test_framework": "pytest",
+    "test_files": ["backend/tests/test_logging.py"],
+    "coverage_target": 80,
+    "mutation_testing": false
+  },
+
+  "acceptance_criteria": [
+    {
+      "id": "AC-1",
+      "given": "Any log statement",
+      "when": "Log is written",
+      "then": "Output is valid JSON with timestamp, level, message",
+      "test_file": "backend/tests/test_logging.py",
+      "test_command": "cd backend && pytest tests/test_logging.py::test_json_format -v"
+    },
+    {
+      "id": "AC-2",
+      "given": "Incoming request",
+      "when": "Request is processed",
+      "then": "Correlation ID is generated and included in all logs",
+      "test_file": "backend/tests/test_logging.py",
+      "test_command": "cd backend && pytest tests/test_logging.py::test_correlation_id -v"
+    },
+    {
+      "id": "AC-3",
+      "given": "Request completes",
+      "when": "Response is sent",
+      "then": "Request/response log includes duration, status, path",
+      "test_file": "backend/tests/test_logging.py",
+      "test_command": "cd backend && pytest tests/test_logging.py::test_request_log -v"
+    },
+    {
+      "id": "AC-4",
+      "given": "Error occurs",
+      "when": "Exception is raised",
+      "then": "Error log includes stack trace and context",
+      "test_file": "backend/tests/test_logging.py",
+      "test_command": "cd backend && pytest tests/test_logging.py::test_error_log -v"
+    }
+  ],
+
+  "dependencies": {
+    "prds": ["PRD-001"],
+    "files": ["backend/main.py"],
+    "external_apis": [],
+    "environment": ["LOG_LEVEL"]
+  },
+
+  "context": {
+    "relevant_files": ["backend/main.py"],
+    "relevant_skills": ["Python logging", "Structured logging"],
+    "background_info": "Structured logs are essential for production debugging",
+    "constraints": ["Use structlog or python-json-logger", "Include correlation IDs"],
+    "anti_patterns": ["Don't log sensitive data", "Don't use print statements"]
+  },
+
+  "output_artifacts": [
+    {"type": "file", "path": "backend/app/middleware/logging.py", "description": "Logging middleware"},
+    {"type": "file", "path": "backend/app/utils/logger.py", "description": "Structured logger setup"}
+  ],
+
+  "execution": {
+    "estimated_complexity": "small",
+    "estimated_tokens": 10000,
+    "max_context_percent": 35,
+    "requires_human_review": false,
+    "background_eligible": true,
+    "parallel_safe": true
+  },
+
+  "tdd_cycle": {
+    "red_phase": {"started_at": null, "tests_written": [], "tests_failing": true},
+    "green_phase": {"started_at": null, "implementation_files": [], "tests_passing": false},
+    "refactor_phase": {"started_at": null, "changes_made": [], "tests_still_passing": false}
+  },
+
+  "results": {
+    "started_at": null,
+    "completed_at": null,
+    "attempts": 0,
+    "validation_passed": false,
+    "code_review_passed": false,
+    "notes": "",
+    "learned_patterns": []
+  }
+}

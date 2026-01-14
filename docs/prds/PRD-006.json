@@ -1,0 +1,105 @@
+{
+  "$schema": "prd-tdd-schema-v2",
+  "id": "PRD-006",
+  "title": "Response Streaming (SSE)",
+  "priority": "P0",
+  "status": "complete",
+  "created": "2026-01-12",
+  "updated": "2026-01-12",
+
+  "goal": {
+    "summary": "Implement Server-Sent Events for token-by-token streaming responses like ChatGPT",
+    "user_story": "As a user, I want to see responses appear word-by-word so the experience feels responsive",
+    "success_definition": "Chat responses stream to frontend with typewriter effect",
+    "out_of_scope": ["WebSocket implementation", "Streaming file uploads"]
+  },
+
+  "tdd": {
+    "test_first": true,
+    "test_framework": "pytest",
+    "test_files": ["backend/tests/test_chat_stream.py"],
+    "coverage_target": 80,
+    "mutation_testing": false
+  },
+
+  "acceptance_criteria": [
+    {
+      "id": "AC-1",
+      "given": "Valid chat message",
+      "when": "POST /chat/stream is called",
+      "then": "Returns SSE stream with content-type text/event-stream",
+      "test_file": "backend/tests/test_chat_stream.py",
+      "test_command": "cd backend && pytest tests/test_chat_stream.py::test_stream_content_type -v"
+    },
+    {
+      "id": "AC-2",
+      "given": "SSE stream is open",
+      "when": "Tokens are generated",
+      "then": "Each token is sent as separate SSE event",
+      "test_file": "backend/tests/test_chat_stream.py",
+      "test_command": "cd backend && pytest tests/test_chat_stream.py::test_stream_tokens -v"
+    },
+    {
+      "id": "AC-3",
+      "given": "Stream completes",
+      "when": "All tokens sent",
+      "then": "Final event includes sources and metadata",
+      "test_file": "backend/tests/test_chat_stream.py",
+      "test_command": "cd backend && pytest tests/test_chat_stream.py::test_stream_final_event -v"
+    },
+    {
+      "id": "AC-4",
+      "given": "Frontend StreamingChat component",
+      "when": "Response streams in",
+      "then": "Text appears with typewriter effect",
+      "test_file": "frontend/__tests__/components/StreamingChat.test.tsx",
+      "test_command": "cd frontend && npm test -- StreamingChat"
+    }
+  ],
+
+  "dependencies": {
+    "prds": ["PRD-001", "PRD-002"],
+    "files": ["backend/main.py", "backend/app/agents/support_agent.py"],
+    "external_apis": ["OpenAI streaming API"],
+    "environment": []
+  },
+
+  "context": {
+    "relevant_files": ["backend/main.py", "frontend/src/components/ChatInterface.tsx"],
+    "relevant_skills": ["SSE", "Async generators", "OpenAI streaming"],
+    "background_info": "Modern AI UX expects streaming - same as ChatGPT experience",
+    "constraints": ["Must use SSE not WebSockets", "Handle connection drops gracefully"],
+    "anti_patterns": ["Don't buffer entire response", "Don't block on slow connections"]
+  },
+
+  "output_artifacts": [
+    {"type": "file", "path": "backend/app/routes/chat_stream.py", "description": "SSE streaming endpoint"},
+    {"type": "file", "path": "frontend/src/components/StreamingChat.tsx", "description": "Streaming UI component"},
+    {"type": "file", "path": "frontend/src/hooks/useStreamingChat.ts", "description": "SSE hook"}
+  ],
+
+  "execution": {
+    "estimated_complexity": "medium",
+    "estimated_tokens": 18000,
+    "max_context_percent": 50,
+    "requires_human_review": false,
+    "background_eligible": true,
+    "parallel_safe": true
+  },
+
+  "tdd_cycle": {
+    "red_phase": {"started_at": null, "tests_written": [], "tests_failing": true},
+    "green_phase": {"started_at": null, "implementation_files": [], "tests_passing": false},
+    "refactor_phase": {"started_at": null, "changes_made": [], "tests_still_passing": false}
+  },
+
+  "results": {
+    "started_at": null,
+    "completed_at": null,
+    "attempts": 0,
+    "validation_passed": false,
+    "code_review_passed": false,
+    "notes": "",
+    "learned_patterns": []
+  }
+}

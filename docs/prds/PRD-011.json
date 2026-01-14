@@ -1,0 +1,104 @@
+{
+  "$schema": "prd-tdd-schema-v2",
+  "id": "PRD-011",
+  "title": "Redis Caching Layer",
+  "priority": "P1",
+  "status": "pending",
+  "created": "2026-01-12",
+  "updated": "2026-01-12",
+
+  "goal": {
+    "summary": "Implement Redis caching for vector search results and semantic query caching",
+    "user_story": "As a system, I want to cache similar queries so I reduce API costs and latency",
+    "success_definition": "Similar queries hit cache, reducing OpenAI costs by 40-60%",
+    "out_of_scope": ["Full response caching", "Session storage"]
+  },
+
+  "tdd": {
+    "test_first": true,
+    "test_framework": "pytest",
+    "test_files": ["backend/tests/test_redis_cache.py"],
+    "coverage_target": 80,
+    "mutation_testing": false
+  },
+
+  "acceptance_criteria": [
+    {
+      "id": "AC-1",
+      "given": "First query for a topic",
+      "when": "Vector search is performed",
+      "then": "Results are cached with TTL",
+      "test_file": "backend/tests/test_redis_cache.py",
+      "test_command": "cd backend && pytest tests/test_redis_cache.py::test_cache_write -v"
+    },
+    {
+      "id": "AC-2",
+      "given": "Repeated identical query",
+      "when": "Vector search is requested",
+      "then": "Returns cached results without API call",
+      "test_file": "backend/tests/test_redis_cache.py",
+      "test_command": "cd backend && pytest tests/test_redis_cache.py::test_cache_hit -v"
+    },
+    {
+      "id": "AC-3",
+      "given": "Semantically similar query",
+      "when": "Query embedding is computed",
+      "then": "Finds and returns cached similar query results",
+      "test_file": "backend/tests/test_redis_cache.py",
+      "test_command": "cd backend && pytest tests/test_redis_cache.py::test_semantic_cache -v"
+    },
+    {
+      "id": "AC-4",
+      "given": "Cache entry older than TTL",
+      "when": "Query is made",
+      "then": "Fetches fresh results and updates cache",
+      "test_file": "backend/tests/test_redis_cache.py",
+      "test_command": "cd backend && pytest tests/test_redis_cache.py::test_cache_expiry -v"
+    }
+  ],
+
+  "dependencies": {
+    "prds": ["PRD-001", "PRD-003"],
+    "files": ["backend/app/services/vector_store.py"],
+    "external_apis": ["Redis"],
+    "environment": ["REDIS_URL"]
+  },
+
+  "context": {
+    "relevant_files": ["backend/app/services/vector_store.py"],
+    "relevant_skills": ["Redis", "Caching strategies"],
+    "background_info": "Caching reduces LLM costs significantly - shows cost awareness",
+    "constraints": ["Use Redis for distributed caching", "Cache invalidation on content update"],
+    "anti_patterns": ["Don't cache user-specific data without namespace", "Don't use infinite TTL"]
+  },
+
+  "output_artifacts": [
+    {"type": "file", "path": "backend/app/services/cache.py", "description": "Redis cache service"},
+    {"type": "file", "path": "backend/app/services/semantic_cache.py", "description": "Semantic similarity cache"}
+  ],
+
+  "execution": {
+    "estimated_complexity": "medium",
+    "estimated_tokens": 15000,
+    "max_context_percent": 45,
+    "requires_human_review": false,
+    "background_eligible": true,
+    "parallel_safe": true
+  },
+
+  "tdd_cycle": {
+    "red_phase": {"started_at": null, "tests_written": [], "tests_failing": true},
+    "green_phase": {"started_at": null, "implementation_files": [], "tests_passing": false},
+    "refactor_phase": {"started_at": null, "changes_made": [], "tests_still_passing": false}
+  },
+
+  "results": {
+    "started_at": null,
+    "completed_at": null,
+    "attempts": 0,
+    "validation_passed": false,
+    "code_review_passed": false,
+    "notes": "",
+    "learned_patterns": []
+  }
+}

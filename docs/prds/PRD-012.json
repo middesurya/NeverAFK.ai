@@ -1,0 +1,104 @@
+{
+  "$schema": "prd-tdd-schema-v2",
+  "id": "PRD-012",
+  "title": "Rate Limiting",
+  "priority": "P1",
+  "status": "pending",
+  "created": "2026-01-12",
+  "updated": "2026-01-12",
+
+  "goal": {
+    "summary": "Implement per-user and per-IP rate limiting with SlowAPI",
+    "user_story": "As a system owner, I want rate limits so abusive users can't overwhelm the service",
+    "success_definition": "Rate limits enforced, returns 429 when exceeded",
+    "out_of_scope": ["Dynamic rate limits based on plan", "Rate limit dashboard"]
+  },
+
+  "tdd": {
+    "test_first": true,
+    "test_framework": "pytest",
+    "test_files": ["backend/tests/test_rate_limiting.py"],
+    "coverage_target": 80,
+    "mutation_testing": false
+  },
+
+  "acceptance_criteria": [
+    {
+      "id": "AC-1",
+      "given": "User within rate limit",
+      "when": "Request is made",
+      "then": "Request succeeds with rate limit headers",
+      "test_file": "backend/tests/test_rate_limiting.py",
+      "test_command": "cd backend && pytest tests/test_rate_limiting.py::test_within_limit -v"
+    },
+    {
+      "id": "AC-2",
+      "given": "User exceeds rate limit",
+      "when": "Request is made",
+      "then": "Returns 429 with retry-after header",
+      "test_file": "backend/tests/test_rate_limiting.py",
+      "test_command": "cd backend && pytest tests/test_rate_limiting.py::test_rate_exceeded -v"
+    },
+    {
+      "id": "AC-3",
+      "given": "IP-based rate limit",
+      "when": "Anonymous user exceeds limit",
+      "then": "Returns 429 for that IP",
+      "test_file": "backend/tests/test_rate_limiting.py",
+      "test_command": "cd backend && pytest tests/test_rate_limiting.py::test_ip_rate_limit -v"
+    },
+    {
+      "id": "AC-4",
+      "given": "Rate limit window expires",
+      "when": "New request is made",
+      "then": "Request succeeds, counter reset",
+      "test_file": "backend/tests/test_rate_limiting.py",
+      "test_command": "cd backend && pytest tests/test_rate_limiting.py::test_window_reset -v"
+    }
+  ],
+
+  "dependencies": {
+    "prds": ["PRD-001", "PRD-011"],
+    "files": ["backend/main.py"],
+    "external_apis": ["Redis"],
+    "environment": ["REDIS_URL"]
+  },
+
+  "context": {
+    "relevant_files": ["backend/main.py"],
+    "relevant_skills": ["SlowAPI", "Rate limiting algorithms"],
+    "background_info": "Rate limiting is essential for production security - interviewers expect this",
+    "constraints": ["Use token bucket or sliding window algorithm", "Store counters in Redis"],
+    "anti_patterns": ["Don't use in-memory counters", "Don't block legitimate users too aggressively"]
+  },
+
+  "output_artifacts": [
+    {"type": "file", "path": "backend/app/middleware/rate_limit.py", "description": "Rate limiting middleware"},
+    {"type": "file", "path": "backend/app/config/rate_limits.py", "description": "Rate limit configuration"}
+  ],
+
+  "execution": {
+    "estimated_complexity": "small",
+    "estimated_tokens": 10000,
+    "max_context_percent": 35,
+    "requires_human_review": false,
+    "background_eligible": true,
+    "parallel_safe": true
+  },
+
+  "tdd_cycle": {
+    "red_phase": {"started_at": null, "tests_written": [], "tests_failing": true},
+    "green_phase": {"started_at": null, "implementation_files": [], "tests_passing": false},
+    "refactor_phase": {"started_at": null, "changes_made": [], "tests_still_passing": false}
+  },
+
+  "results": {
+    "started_at": null,
+    "completed_at": null,
+    "attempts": 0,
+    "validation_passed": false,
+    "code_review_passed": false,
+    "notes": "",
+    "learned_patterns": []
+  }
+}

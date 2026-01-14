@@ -1,0 +1,59 @@
+{
+  "$schema": "prd-queue-schema-v1",
+  "version": "1.0.0",
+  "updated": "2026-01-12T21:00:00Z",
+  "description": "PRD execution queue with dependency resolution",
+
+  "queue": [
+    {"id": "PRD-001", "title": "Pytest Setup with Fixtures", "phase": 1, "priority": "P0", "status": "complete", "dependencies": []},
+    {"id": "PRD-002", "title": "Mock External Services", "phase": 1, "priority": "P0", "status": "complete", "dependencies": ["PRD-001"]},
+    {"id": "PRD-003", "title": "Unit Tests for RAG Pipeline", "phase": 1, "priority": "P0", "status": "complete", "dependencies": ["PRD-001", "PRD-002"]},
+    {"id": "PRD-004", "title": "Integration Tests for API Endpoints", "phase": 1, "priority": "P0", "status": "complete", "dependencies": ["PRD-001", "PRD-002"]},
+    {"id": "PRD-005", "title": "Test Coverage Reporting", "phase": 1, "priority": "P0", "status": "complete", "dependencies": ["PRD-001", "PRD-003", "PRD-004"]},
+    {"id": "PRD-006", "title": "Response Streaming (SSE)", "phase": 2, "priority": "P0", "status": "complete", "dependencies": ["PRD-001", "PRD-002"]},
+    {"id": "PRD-007", "title": "Multi-Model Support", "phase": 2, "priority": "P0", "status": "complete", "dependencies": ["PRD-001", "PRD-002"]},
+    {"id": "PRD-008", "title": "Conversation Memory", "phase": 2, "priority": "P0", "status": "complete", "dependencies": ["PRD-001", "PRD-002"]},
+    {"id": "PRD-009", "title": "Prompt Injection Protection", "phase": 2, "priority": "P0", "status": "complete", "dependencies": ["PRD-001"]},
+    {"id": "PRD-010", "title": "Response Evaluation", "phase": 2, "priority": "P0", "status": "complete", "dependencies": ["PRD-001", "PRD-002", "PRD-003"]},
+    {"id": "PRD-011", "title": "Redis Caching Layer", "phase": 3, "priority": "P1", "status": "complete", "dependencies": ["PRD-001", "PRD-003"]},
+    {"id": "PRD-012", "title": "Rate Limiting", "phase": 3, "priority": "P1", "status": "complete", "dependencies": ["PRD-001", "PRD-011"]},
+    {"id": "PRD-013", "title": "Structured Logging", "phase": 3, "priority": "P1", "status": "complete", "dependencies": ["PRD-001"]},
+    {"id": "PRD-014", "title": "Circuit Breakers", "phase": 3, "priority": "P1", "status": "complete", "dependencies": ["PRD-001", "PRD-013"]},
+    {"id": "PRD-015", "title": "Background Jobs", "phase": 3, "priority": "P1", "status": "complete", "dependencies": ["PRD-001", "PRD-011"]},
+    {"id": "PRD-016", "title": "CI/CD Pipeline", "phase": 4, "priority": "P1", "status": "complete", "dependencies": ["PRD-001", "PRD-005"]},
+    {"id": "PRD-017", "title": "Docker Optimization", "phase": 4, "priority": "P1", "status": "complete", "dependencies": []},
+    {"id": "PRD-018", "title": "Health Checks & Metrics", "phase": 4, "priority": "P1", "status": "complete", "dependencies": ["PRD-001"]},
+    {"id": "PRD-019", "title": "Distributed Tracing", "phase": 4, "priority": "P1", "status": "complete", "dependencies": ["PRD-001", "PRD-013"]},
+    {"id": "PRD-020", "title": "Error Tracking (Sentry)", "phase": 4, "priority": "P1", "status": "complete", "dependencies": ["PRD-001"]},
+    {"id": "PRD-021", "title": "WebSocket Real-time Updates", "phase": 5, "priority": "P2", "status": "complete", "dependencies": ["PRD-001"]},
+    {"id": "PRD-022", "title": "API Versioning", "phase": 5, "priority": "P2", "status": "complete", "dependencies": ["PRD-001"]},
+    {"id": "PRD-023", "title": "GraphQL Endpoint", "phase": 5, "priority": "P2", "status": "complete", "dependencies": ["PRD-001", "PRD-004"]},
+    {"id": "PRD-024", "title": "Webhook System", "phase": 5, "priority": "P2", "status": "complete", "dependencies": ["PRD-001", "PRD-015"]}
+  ],
+
+  "execution_order": [
+    "PRD-001", "PRD-002", "PRD-003", "PRD-004", "PRD-005",
+    "PRD-006", "PRD-007", "PRD-008", "PRD-009", "PRD-010",
+    "PRD-011", "PRD-012", "PRD-013", "PRD-014", "PRD-015",
+    "PRD-016", "PRD-017", "PRD-018", "PRD-019", "PRD-020",
+    "PRD-021", "PRD-022", "PRD-023", "PRD-024"
+  ],
+
+  "phases": {
+    "1": {"name": "Backend Testing Excellence", "priority": "P0", "prds": ["PRD-001", "PRD-002", "PRD-003", "PRD-004", "PRD-005"]},
+    "2": {"name": "AI/ML Sophistication", "priority": "P0", "prds": ["PRD-006", "PRD-007", "PRD-008", "PRD-009", "PRD-010"]},
+    "3": {"name": "Production Backend Patterns", "priority": "P1", "prds": ["PRD-011", "PRD-012", "PRD-013", "PRD-014", "PRD-015"]},
+    "4": {"name": "DevOps & Observability", "priority": "P1", "prds": ["PRD-016", "PRD-017", "PRD-018", "PRD-019", "PRD-020"]},
+    "5": {"name": "Advanced Features", "priority": "P2", "prds": ["PRD-021", "PRD-022", "PRD-023", "PRD-024"]}
+  },
+
+  "stats": {
+    "total": 24,
+    "pending": 17,
+    "in_progress": 0,
+    "completed": 7,
+    "failed": 0
+  },
+
+  "notes": "Generated from docs/implementation-plan.md on 2026-01-12. Start with /project:orchestrate"
+}

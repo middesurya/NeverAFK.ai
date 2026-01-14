@@ -1,0 +1,104 @@
+{
+  "$schema": "prd-tdd-schema-v2",
+  "id": "PRD-007",
+  "title": "Multi-Model Support",
+  "priority": "P0",
+  "status": "complete",
+  "created": "2026-01-12",
+  "updated": "2026-01-12",
+
+  "goal": {
+    "summary": "Support multiple LLM providers (OpenAI, Claude) with automatic fallback chains",
+    "user_story": "As a system, I want fallback models so that service continues if one provider fails",
+    "success_definition": "System can use OpenAI or Claude with automatic failover",
+    "out_of_scope": ["Local model support", "Model fine-tuning"]
+  },
+
+  "tdd": {
+    "test_first": true,
+    "test_framework": "pytest",
+    "test_files": ["backend/tests/test_multi_model.py"],
+    "coverage_target": 80,
+    "mutation_testing": false
+  },
+
+  "acceptance_criteria": [
+    {
+      "id": "AC-1",
+      "given": "Model configuration",
+      "when": "Primary model (OpenAI) is available",
+      "then": "Uses OpenAI for generation",
+      "test_file": "backend/tests/test_multi_model.py",
+      "test_command": "cd backend && pytest tests/test_multi_model.py::test_primary_model -v"
+    },
+    {
+      "id": "AC-2",
+      "given": "Primary model fails",
+      "when": "Request is made",
+      "then": "Automatically falls back to Claude",
+      "test_file": "backend/tests/test_multi_model.py",
+      "test_command": "cd backend && pytest tests/test_multi_model.py::test_fallback_to_claude -v"
+    },
+    {
+      "id": "AC-3",
+      "given": "Model selector",
+      "when": "Specific model is requested",
+      "then": "Uses the requested model",
+      "test_file": "backend/tests/test_multi_model.py",
+      "test_command": "cd backend && pytest tests/test_multi_model.py::test_model_selection -v"
+    },
+    {
+      "id": "AC-4",
+      "given": "All models fail",
+      "when": "Request is made",
+      "then": "Returns graceful error with retry suggestion",
+      "test_file": "backend/tests/test_multi_model.py",
+      "test_command": "cd backend && pytest tests/test_multi_model.py::test_all_models_fail -v"
+    }
+  ],
+
+  "dependencies": {
+    "prds": ["PRD-001", "PRD-002"],
+    "files": ["backend/app/agents/support_agent.py"],
+    "external_apis": ["OpenAI API", "Anthropic API"],
+    "environment": ["OPENAI_API_KEY", "ANTHROPIC_API_KEY"]
+  },
+
+  "context": {
+    "relevant_files": ["backend/app/agents/support_agent.py"],
+    "relevant_skills": ["LangChain model abstraction", "Error handling"],
+    "background_info": "Multi-model support shows AI/ML sophistication and ensures reliability",
+    "constraints": ["Must maintain consistent response format", "Fallback should be transparent to users"],
+    "anti_patterns": ["Don't hardcode model names", "Don't ignore rate limits"]
+  },
+
+  "output_artifacts": [
+    {"type": "file", "path": "backend/app/services/model_provider.py", "description": "Multi-model abstraction"},
+    {"type": "file", "path": "backend/app/config/models.py", "description": "Model configuration"}
+  ],
+
+  "execution": {
+    "estimated_complexity": "medium",
+    "estimated_tokens": 15000,
+    "max_context_percent": 45,
+    "requires_human_review": false,
+    "background_eligible": true,
+    "parallel_safe": true
+  },
+
+  "tdd_cycle": {
+    "red_phase": {"started_at": null, "tests_written": [], "tests_failing": true},
+    "green_phase": {"started_at": null, "implementation_files": [], "tests_passing": false},
+    "refactor_phase": {"started_at": null, "changes_made": [], "tests_still_passing": false}
+  },
+
+  "results": {
+    "started_at": null,
+    "completed_at": null,
+    "attempts": 0,
+    "validation_passed": false,
+    "code_review_passed": false,
+    "notes": "",
+    "learned_patterns": []
+  }
+}

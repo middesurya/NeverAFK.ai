@@ -1,0 +1,104 @@
+{
+  "$schema": "prd-tdd-schema-v2",
+  "id": "PRD-008",
+  "title": "Conversation Memory",
+  "priority": "P0",
+  "status": "pending",
+  "created": "2026-01-12",
+  "updated": "2026-01-12",
+
+  "goal": {
+    "summary": "Implement sliding window conversation memory with token counting and summarization",
+    "user_story": "As a user, I want the AI to remember our conversation context for coherent multi-turn chat",
+    "success_definition": "Conversations maintain context while staying within token limits",
+    "out_of_scope": ["Long-term memory across sessions", "User preference learning"]
+  },
+
+  "tdd": {
+    "test_first": true,
+    "test_framework": "pytest",
+    "test_files": ["backend/tests/test_conversation_memory.py"],
+    "coverage_target": 80,
+    "mutation_testing": false
+  },
+
+  "acceptance_criteria": [
+    {
+      "id": "AC-1",
+      "given": "Multi-turn conversation",
+      "when": "User sends follow-up message",
+      "then": "Previous context is included in prompt",
+      "test_file": "backend/tests/test_conversation_memory.py",
+      "test_command": "cd backend && pytest tests/test_conversation_memory.py::test_context_included -v"
+    },
+    {
+      "id": "AC-2",
+      "given": "Conversation exceeds token limit",
+      "when": "New message is added",
+      "then": "Oldest messages are dropped (sliding window)",
+      "test_file": "backend/tests/test_conversation_memory.py",
+      "test_command": "cd backend && pytest tests/test_conversation_memory.py::test_sliding_window -v"
+    },
+    {
+      "id": "AC-3",
+      "given": "Long conversation",
+      "when": "Token limit approached",
+      "then": "Early messages are summarized instead of dropped",
+      "test_file": "backend/tests/test_conversation_memory.py",
+      "test_command": "cd backend && pytest tests/test_conversation_memory.py::test_summarization -v"
+    },
+    {
+      "id": "AC-4",
+      "given": "Token counter",
+      "when": "Message is added",
+      "then": "Accurate token count is maintained",
+      "test_file": "backend/tests/test_conversation_memory.py",
+      "test_command": "cd backend && pytest tests/test_conversation_memory.py::test_token_counting -v"
+    }
+  ],
+
+  "dependencies": {
+    "prds": ["PRD-001", "PRD-002"],
+    "files": ["backend/app/agents/support_agent.py"],
+    "external_apis": ["tiktoken"],
+    "environment": []
+  },
+
+  "context": {
+    "relevant_files": ["backend/app/agents/support_agent.py"],
+    "relevant_skills": ["Token counting", "Context management"],
+    "background_info": "Proper memory management is critical for coherent multi-turn conversations",
+    "constraints": ["Must use tiktoken for accurate counting", "Summarization should preserve key info"],
+    "anti_patterns": ["Don't exceed context window", "Don't lose important early context"]
+  },
+
+  "output_artifacts": [
+    {"type": "file", "path": "backend/app/services/conversation_memory.py", "description": "Memory management service"},
+    {"type": "file", "path": "backend/app/utils/token_counter.py", "description": "Token counting utility"}
+  ],
+
+  "execution": {
+    "estimated_complexity": "medium",
+    "estimated_tokens": 15000,
+    "max_context_percent": 45,
+    "requires_human_review": false,
+    "background_eligible": true,
+    "parallel_safe": true
+  },
+
+  "tdd_cycle": {
+    "red_phase": {"started_at": null, "tests_written": [], "tests_failing": true},
+    "green_phase": {"started_at": null, "implementation_files": [], "tests_passing": false},
+    "refactor_phase": {"started_at": null, "changes_made": [], "tests_still_passing": false}
+  },
+
+  "results": {
+    "started_at": null,
+    "completed_at": null,
+    "attempts": 0,
+    "validation_passed": false,
+    "code_review_passed": false,
+    "notes": "",
+    "learned_patterns": []
+  }
+}

@@ -1,0 +1,105 @@
+{
+  "$schema": "prd-tdd-schema-v2",
+  "id": "PRD-017",
+  "title": "Docker Optimization",
+  "priority": "P1",
+  "status": "pending",
+  "created": "2026-01-12",
+  "updated": "2026-01-12",
+
+  "goal": {
+    "summary": "Optimize Docker builds with multi-stage builds and layer caching",
+    "user_story": "As a developer, I want fast Docker builds so deployments are quick",
+    "success_definition": "Docker builds are < 2 minutes, images are minimal size",
+    "out_of_scope": ["Kubernetes deployment", "Docker Compose orchestration"]
+  },
+
+  "tdd": {
+    "test_first": true,
+    "test_framework": "pytest",
+    "test_files": [],
+    "coverage_target": 0,
+    "mutation_testing": false
+  },
+
+  "acceptance_criteria": [
+    {
+      "id": "AC-1",
+      "given": "Backend Dockerfile",
+      "when": "Docker build runs",
+      "then": "Uses multi-stage build with slim base image",
+      "test_file": "backend/Dockerfile",
+      "test_command": "docker build -t backend-test backend/"
+    },
+    {
+      "id": "AC-2",
+      "given": "No code changes",
+      "when": "Docker build runs",
+      "then": "Dependencies are cached, build is < 30 seconds",
+      "test_file": "backend/Dockerfile",
+      "test_command": "time docker build -t backend-test backend/"
+    },
+    {
+      "id": "AC-3",
+      "given": "Frontend Dockerfile",
+      "when": "Docker build runs",
+      "then": "Produces standalone Next.js output, minimal image",
+      "test_file": "frontend/Dockerfile",
+      "test_command": "docker build -t frontend-test frontend/"
+    },
+    {
+      "id": "AC-4",
+      "given": "Built images",
+      "when": "Image size checked",
+      "then": "Backend < 500MB, Frontend < 200MB",
+      "test_file": "",
+      "test_command": "docker images | grep -E 'backend|frontend'"
+    }
+  ],
+
+  "dependencies": {
+    "prds": [],
+    "files": ["backend/Dockerfile", "frontend/Dockerfile"],
+    "external_apis": [],
+    "environment": []
+  },
+
+  "context": {
+    "relevant_files": ["backend/Dockerfile", "docker-compose.yml"],
+    "relevant_skills": ["Docker", "Multi-stage builds"],
+    "background_info": "Optimized Docker builds save time and money",
+    "constraints": ["Use python:3.11-slim as base", "Use node:20-alpine for frontend"],
+    "anti_patterns": ["Don't copy unnecessary files", "Don't install dev dependencies in prod"]
+  },
+
+  "output_artifacts": [
+    {"type": "file", "path": "backend/Dockerfile", "description": "Optimized backend Dockerfile"},
+    {"type": "file", "path": "frontend/Dockerfile", "description": "Optimized frontend Dockerfile"},
+    {"type": "file", "path": ".dockerignore", "description": "Docker ignore file"}
+  ],
+
+  "execution": {
+    "estimated_complexity": "small",
+    "estimated_tokens": 8000,
+    "max_context_percent": 30,
+    "requires_human_review": false,
+    "background_eligible": true,
+    "parallel_safe": true
+  },
+
+  "tdd_cycle": {
+    "red_phase": {"started_at": null, "tests_written": [], "tests_failing": true},
+    "green_phase": {"started_at": null, "implementation_files": [], "tests_passing": false},
+    "refactor_phase": {"started_at": null, "changes_made": [], "tests_still_passing": false}
+  },
+
+  "results": {
+    "started_at": null,
+    "completed_at": null,
+    "attempts": 0,
+    "validation_passed": false,
+    "code_review_passed": false,
+    "notes": "",
+    "learned_patterns": []
+  }
+}

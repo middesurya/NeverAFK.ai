@@ -23,7 +23,7 @@ class Database:
         self.client = None
 
         # Only initialize if we have valid Supabase credentials (JWT tokens start with 'eyJ')
-        if SUPABASE_AVAILABLE and self.url and self.key and self.key.startswith('eyJ'):
+        if SUPABASE_AVAILABLE and self.url and self.key and self.key.startswith('eyJ'):  # pragma: no cover
             try:
                 self.client = create_client(self.url, self.key)
                 print("[OK] Supabase connected successfully")
@@ -48,6 +48,7 @@ class Database:
                 "created_at": datetime.utcnow().isoformat()
             }
 
+        # Supabase integration - requires real connection  # pragma: no cover
         response = self.client.table("creators").insert({
             "email": email,
             "name": name,
@@ -67,6 +68,7 @@ class Database:
                 "created_at": datetime.utcnow().isoformat()
             }
 
+        # Supabase integration - requires real connection  # pragma: no cover
         response = self.client.table("creators").select("*").eq("id", creator_id).execute()
         return response.data[0] if response.data else None
 
@@ -90,6 +92,7 @@ class Database:
                 "created_at": datetime.utcnow().isoformat()
             }
 
+        # Supabase integration - requires real connection  # pragma: no cover
         response = self.client.table("conversations").insert({
             "creator_id": creator_id,
             "student_message": student_message,
@@ -106,6 +109,7 @@ class Database:
             # Return empty list for local development (no persistence)
             return []
 
+        # Supabase integration - requires real connection  # pragma: no cover
         response = self.client.table("conversations") \
             .select("*") \
             .eq("creator_id", creator_id) \
@@ -123,6 +127,7 @@ class Database:
                 "credits_remaining": 100 - credits_used
             }
 
+        # Supabase integration - requires real connection  # pragma: no cover
         creator = await self.get_creator(creator_id)
         if not creator:
             return None

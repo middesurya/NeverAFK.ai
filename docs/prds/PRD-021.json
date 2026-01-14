@@ -1,0 +1,105 @@
+{
+  "$schema": "prd-tdd-schema-v2",
+  "id": "PRD-021",
+  "title": "WebSocket Real-time Updates",
+  "priority": "P2",
+  "status": "pending",
+  "created": "2026-01-12",
+  "updated": "2026-01-12",
+
+  "goal": {
+    "summary": "Implement WebSocket support for live typing indicators and real-time dashboard updates",
+    "user_story": "As a user, I want to see real-time updates without refreshing the page",
+    "success_definition": "Dashboard shows live updates, typing indicators work across tabs",
+    "out_of_scope": ["Collaborative editing", "Push notifications"]
+  },
+
+  "tdd": {
+    "test_first": true,
+    "test_framework": "pytest",
+    "test_files": ["backend/tests/test_websocket.py"],
+    "coverage_target": 80,
+    "mutation_testing": false
+  },
+
+  "acceptance_criteria": [
+    {
+      "id": "AC-1",
+      "given": "WebSocket connection",
+      "when": "Client connects",
+      "then": "Connection is established and authenticated",
+      "test_file": "backend/tests/test_websocket.py",
+      "test_command": "cd backend && pytest tests/test_websocket.py::test_ws_connection -v"
+    },
+    {
+      "id": "AC-2",
+      "given": "User typing",
+      "when": "Typing event is sent",
+      "then": "Other connected clients receive typing indicator",
+      "test_file": "backend/tests/test_websocket.py",
+      "test_command": "cd backend && pytest tests/test_websocket.py::test_typing_indicator -v"
+    },
+    {
+      "id": "AC-3",
+      "given": "New conversation",
+      "when": "Message is received",
+      "then": "Dashboard updates in real-time",
+      "test_file": "backend/tests/test_websocket.py",
+      "test_command": "cd backend && pytest tests/test_websocket.py::test_realtime_update -v"
+    },
+    {
+      "id": "AC-4",
+      "given": "Connection drops",
+      "when": "Client reconnects",
+      "then": "Reconnection with exponential backoff succeeds",
+      "test_file": "backend/tests/test_websocket.py",
+      "test_command": "cd backend && pytest tests/test_websocket.py::test_reconnection -v"
+    }
+  ],
+
+  "dependencies": {
+    "prds": ["PRD-001"],
+    "files": ["backend/main.py"],
+    "external_apis": [],
+    "environment": []
+  },
+
+  "context": {
+    "relevant_files": ["backend/main.py", "frontend/src/components/ChatInterface.tsx"],
+    "relevant_skills": ["WebSocket", "Real-time systems"],
+    "background_info": "Real-time updates show modern architecture knowledge",
+    "constraints": ["Use FastAPI WebSocket support", "Handle reconnection gracefully"],
+    "anti_patterns": ["Don't create too many connections", "Don't broadcast to all users"]
+  },
+
+  "output_artifacts": [
+    {"type": "file", "path": "backend/app/routes/websocket.py", "description": "WebSocket endpoint"},
+    {"type": "file", "path": "backend/app/services/connection_manager.py", "description": "Connection manager"},
+    {"type": "file", "path": "frontend/src/hooks/useWebSocket.ts", "description": "WebSocket hook"}
+  ],
+
+  "execution": {
+    "estimated_complexity": "medium",
+    "estimated_tokens": 15000,
+    "max_context_percent": 45,
+    "requires_human_review": false,
+    "background_eligible": true,
+    "parallel_safe": true
+  },
+
+  "tdd_cycle": {
+    "red_phase": {"started_at": null, "tests_written": [], "tests_failing": true},
+    "green_phase": {"started_at": null, "implementation_files": [], "tests_passing": false},
+    "refactor_phase": {"started_at": null, "changes_made": [], "tests_still_passing": false}
+  },
+
+  "results": {
+    "started_at": null,
+    "completed_at": null,
+    "attempts": 0,
+    "validation_passed": false,
+    "code_review_passed": false,
+    "notes": "",
+    "learned_patterns": []
+  }
+}

@@ -1,0 +1,105 @@
+{
+  "$schema": "prd-tdd-schema-v2",
+  "id": "PRD-015",
+  "title": "Background Jobs",
+  "priority": "P1",
+  "status": "pending",
+  "created": "2026-01-12",
+  "updated": "2026-01-12",
+
+  "goal": {
+    "summary": "Implement async background job processing for content ingestion with Celery/RQ",
+    "user_story": "As a creator, I want uploads to process in background so the API responds quickly",
+    "success_definition": "Content uploads return immediately, processing happens asynchronously",
+    "out_of_scope": ["Job scheduling", "Distributed task processing"]
+  },
+
+  "tdd": {
+    "test_first": true,
+    "test_framework": "pytest",
+    "test_files": ["backend/tests/test_background_jobs.py"],
+    "coverage_target": 80,
+    "mutation_testing": false
+  },
+
+  "acceptance_criteria": [
+    {
+      "id": "AC-1",
+      "given": "File upload request",
+      "when": "Upload is received",
+      "then": "Returns 202 with job ID immediately",
+      "test_file": "backend/tests/test_background_jobs.py",
+      "test_command": "cd backend && pytest tests/test_background_jobs.py::test_async_upload -v"
+    },
+    {
+      "id": "AC-2",
+      "given": "Job ID",
+      "when": "Status endpoint is called",
+      "then": "Returns current job status (pending/processing/completed/failed)",
+      "test_file": "backend/tests/test_background_jobs.py",
+      "test_command": "cd backend && pytest tests/test_background_jobs.py::test_job_status -v"
+    },
+    {
+      "id": "AC-3",
+      "given": "Background job",
+      "when": "Processing completes",
+      "then": "Content is indexed in vector store",
+      "test_file": "backend/tests/test_background_jobs.py",
+      "test_command": "cd backend && pytest tests/test_background_jobs.py::test_job_completion -v"
+    },
+    {
+      "id": "AC-4",
+      "given": "Job fails",
+      "when": "Status is checked",
+      "then": "Returns error details and allows retry",
+      "test_file": "backend/tests/test_background_jobs.py",
+      "test_command": "cd backend && pytest tests/test_background_jobs.py::test_job_failure -v"
+    }
+  ],
+
+  "dependencies": {
+    "prds": ["PRD-001", "PRD-011"],
+    "files": ["backend/app/services/ingestion.py"],
+    "external_apis": ["Redis"],
+    "environment": ["REDIS_URL"]
+  },
+
+  "context": {
+    "relevant_files": ["backend/app/services/ingestion.py", "backend/main.py"],
+    "relevant_skills": ["Celery/RQ", "Async task processing"],
+    "background_info": "Background jobs prevent API blocking during heavy processing",
+    "constraints": ["Use Redis as broker", "Implement proper error handling and retries"],
+    "anti_patterns": ["Don't block API on long tasks", "Don't lose jobs on worker crash"]
+  },
+
+  "output_artifacts": [
+    {"type": "file", "path": "backend/app/tasks/ingestion_tasks.py", "description": "Background ingestion tasks"},
+    {"type": "file", "path": "backend/app/services/job_manager.py", "description": "Job management service"},
+    {"type": "file", "path": "backend/celery_app.py", "description": "Celery configuration"}
+  ],
+
+  "execution": {
+    "estimated_complexity": "medium",
+    "estimated_tokens": 15000,
+    "max_context_percent": 45,
+    "requires_human_review": false,
+    "background_eligible": true,
+    "parallel_safe": true
+  },
+
+  "tdd_cycle": {
+    "red_phase": {"started_at": null, "tests_written": [], "tests_failing": true},
+    "green_phase": {"started_at": null, "implementation_files": [], "tests_passing": false},
+    "refactor_phase": {"started_at": null, "changes_made": [], "tests_still_passing": false}
+  },
+
+  "results": {
+    "started_at": null,
+    "completed_at": null,
+    "attempts": 0,
+    "validation_passed": false,
+    "code_review_passed": false,
+    "notes": "",
+    "learned_patterns": []
+  }
+}

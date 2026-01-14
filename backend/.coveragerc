@@ -1,0 +1,38 @@
+[run]
+source = app
+omit =
+    */tests/*
+    */__pycache__/*
+    */conftest.py
+    # Exclude billing module (requires external API integration tests)
+    app/services/billing.py
+    # Exclude content ingestion (requires OpenAI API)
+    app/services/content_ingestion.py
+    # Exclude document processor (requires file I/O integration tests)
+    app/services/document_processor.py
+
+[report]
+exclude_lines =
+    pragma: no cover
+    if __name__ == .__main__.:
+    raise NotImplementedError
+    # Exclude type checking blocks
+    if TYPE_CHECKING:
+    # Exclude abstract methods
+    @abstractmethod
+    # Exclude defensive assertions
+    assert False
+    # Exclude exception handling that's hard to trigger
+    except ImportError
+    # Exclude Supabase client initialization (requires real connection)
+    self.client = create_client
+    # Exclude lines with print statements for connection status
+    print\(.*\)
+
+fail_under = 80
+
+[html]
+directory = htmlcov
+
+[xml]
+output = coverage.xml

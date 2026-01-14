@@ -1,0 +1,105 @@
+{
+  "$schema": "prd-tdd-schema-v2",
+  "id": "PRD-022",
+  "title": "API Versioning",
+  "priority": "P2",
+  "status": "pending",
+  "created": "2026-01-12",
+  "updated": "2026-01-12",
+
+  "goal": {
+    "summary": "Implement API versioning (v1/v2) for backward compatibility",
+    "user_story": "As an API consumer, I want versioned endpoints so breaking changes don't affect me",
+    "success_definition": "API supports /v1 and /v2 prefixes with different behaviors",
+    "out_of_scope": ["Deprecation notices", "API documentation"]
+  },
+
+  "tdd": {
+    "test_first": true,
+    "test_framework": "pytest",
+    "test_files": ["backend/tests/test_api_versioning.py"],
+    "coverage_target": 80,
+    "mutation_testing": false
+  },
+
+  "acceptance_criteria": [
+    {
+      "id": "AC-1",
+      "given": "v1 endpoint",
+      "when": "GET /v1/chat is called",
+      "then": "Returns v1 response format",
+      "test_file": "backend/tests/test_api_versioning.py",
+      "test_command": "cd backend && pytest tests/test_api_versioning.py::test_v1_endpoint -v"
+    },
+    {
+      "id": "AC-2",
+      "given": "v2 endpoint",
+      "when": "GET /v2/chat is called",
+      "then": "Returns v2 response format with new fields",
+      "test_file": "backend/tests/test_api_versioning.py",
+      "test_command": "cd backend && pytest tests/test_api_versioning.py::test_v2_endpoint -v"
+    },
+    {
+      "id": "AC-3",
+      "given": "No version prefix",
+      "when": "GET /chat is called",
+      "then": "Defaults to latest stable version",
+      "test_file": "backend/tests/test_api_versioning.py",
+      "test_command": "cd backend && pytest tests/test_api_versioning.py::test_default_version -v"
+    },
+    {
+      "id": "AC-4",
+      "given": "Invalid version",
+      "when": "GET /v99/chat is called",
+      "then": "Returns 404 with available versions",
+      "test_file": "backend/tests/test_api_versioning.py",
+      "test_command": "cd backend && pytest tests/test_api_versioning.py::test_invalid_version -v"
+    }
+  ],
+
+  "dependencies": {
+    "prds": ["PRD-001"],
+    "files": ["backend/main.py"],
+    "external_apis": [],
+    "environment": []
+  },
+
+  "context": {
+    "relevant_files": ["backend/main.py"],
+    "relevant_skills": ["API design", "Versioning strategies"],
+    "background_info": "API versioning is essential for public APIs",
+    "constraints": ["Use URL path versioning", "Maintain backward compatibility"],
+    "anti_patterns": ["Don't break v1 when adding v2", "Don't version every endpoint separately"]
+  },
+
+  "output_artifacts": [
+    {"type": "file", "path": "backend/app/routes/v1/__init__.py", "description": "v1 routes"},
+    {"type": "file", "path": "backend/app/routes/v2/__init__.py", "description": "v2 routes"},
+    {"type": "file", "path": "backend/app/middleware/versioning.py", "description": "Version routing"}
+  ],
+
+  "execution": {
+    "estimated_complexity": "small",
+    "estimated_tokens": 10000,
+    "max_context_percent": 35,
+    "requires_human_review": false,
+    "background_eligible": true,
+    "parallel_safe": true
+  },
+
+  "tdd_cycle": {
+    "red_phase": {"started_at": null, "tests_written": [], "tests_failing": true},
+    "green_phase": {"started_at": null, "implementation_files": [], "tests_passing": false},
+    "refactor_phase": {"started_at": null, "changes_made": [], "tests_still_passing": false}
+  },
+
+  "results": {
+    "started_at": null,
+    "completed_at": null,
+    "attempts": 0,
+    "validation_passed": false,
+    "code_review_passed": false,
+    "notes": "",
+    "learned_patterns": []
+  }
+}

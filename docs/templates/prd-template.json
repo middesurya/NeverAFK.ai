@@ -1,0 +1,95 @@
+{
+  "$schema": "prd-tdd-schema-v2",
+  "id": "PRD-XXX",
+  "title": "",
+  "priority": "P0|P1|P2|P3",
+  "status": "pending",
+  "created": "",
+  "updated": "",
+
+  "goal": {
+    "summary": "",
+    "user_story": "As a [user], I want [feature] so that [benefit]",
+    "success_definition": "",
+    "out_of_scope": []
+  },
+
+  "tdd": {
+    "test_first": true,
+    "test_framework": "pytest",
+    "test_files": [],
+    "coverage_target": 80,
+    "mutation_testing": false
+  },
+
+  "acceptance_criteria": [
+    {
+      "id": "AC-1",
+      "given": "context/precondition",
+      "when": "action/trigger",
+      "then": "expected outcome",
+      "test_file": "tests/acceptance/PRD-XXX/ac-1.test.py",
+      "test_command": "pytest tests/acceptance/PRD-XXX/ac-1.test.py -v"
+    }
+  ],
+
+  "dependencies": {
+    "prds": [],
+    "files": [],
+    "external_apis": [],
+    "environment": []
+  },
+
+  "context": {
+    "relevant_files": [],
+    "relevant_skills": [],
+    "background_info": "",
+    "constraints": [],
+    "anti_patterns": []
+  },
+
+  "output_artifacts": [
+    {
+      "type": "file",
+      "path": "",
+      "description": ""
+    }
+  ],
+
+  "execution": {
+    "estimated_complexity": "small|medium|large",
+    "estimated_tokens": 0,
+    "max_context_percent": 60,
+    "requires_human_review": false,
+    "background_eligible": true,
+    "parallel_safe": true
+  },
+
+  "tdd_cycle": {
+    "red_phase": {
+      "started_at": null,
+      "tests_written": [],
+      "tests_failing": true
+    },
+    "green_phase": {
+      "started_at": null,
+      "implementation_files": [],
+      "tests_passing": false
+    },
+    "refactor_phase": {
+      "started_at": null,
+      "changes_made": [],
+      "tests_still_passing": false
+    }
+  },
+
+  "results": {
+    "started_at": null,
+    "completed_at": null,
+    "attempts": 0,
+    "validation_passed": false,
+    "code_review_passed": false,
+    "notes": "",
+    "learned_patterns": []
+  }
+}

@@ -1,0 +1,104 @@
+{
+  "$schema": "prd-tdd-schema-v2",
+  "id": "PRD-019",
+  "title": "Distributed Tracing",
+  "priority": "P1",
+  "status": "pending",
+  "created": "2026-01-12",
+  "updated": "2026-01-12",
+
+  "goal": {
+    "summary": "Implement request tracing across the RAG pipeline with OpenTelemetry",
+    "user_story": "As a developer, I want to trace requests across services for debugging",
+    "success_definition": "Each request has a trace ID visible across all service calls",
+    "out_of_scope": ["Jaeger/Zipkin setup", "Distributed system tracing"]
+  },
+
+  "tdd": {
+    "test_first": true,
+    "test_framework": "pytest",
+    "test_files": ["backend/tests/test_tracing.py"],
+    "coverage_target": 80,
+    "mutation_testing": false
+  },
+
+  "acceptance_criteria": [
+    {
+      "id": "AC-1",
+      "given": "Incoming request",
+      "when": "Request is processed",
+      "then": "Trace ID is generated and propagated",
+      "test_file": "backend/tests/test_tracing.py",
+      "test_command": "cd backend && pytest tests/test_tracing.py::test_trace_id_generated -v"
+    },
+    {
+      "id": "AC-2",
+      "given": "RAG pipeline",
+      "when": "Each node executes",
+      "then": "Span is created with parent-child relationship",
+      "test_file": "backend/tests/test_tracing.py",
+      "test_command": "cd backend && pytest tests/test_tracing.py::test_span_hierarchy -v"
+    },
+    {
+      "id": "AC-3",
+      "given": "Response returned",
+      "when": "Response headers checked",
+      "then": "Trace ID is included in response headers",
+      "test_file": "backend/tests/test_tracing.py",
+      "test_command": "cd backend && pytest tests/test_tracing.py::test_trace_in_response -v"
+    },
+    {
+      "id": "AC-4",
+      "given": "Error occurs",
+      "when": "Trace is recorded",
+      "then": "Error details are attached to span",
+      "test_file": "backend/tests/test_tracing.py",
+      "test_command": "cd backend && pytest tests/test_tracing.py::test_error_span -v"
+    }
+  ],
+
+  "dependencies": {
+    "prds": ["PRD-001", "PRD-013"],
+    "files": ["backend/main.py", "backend/app/agents/support_agent.py"],
+    "external_apis": [],
+    "environment": []
+  },
+
+  "context": {
+    "relevant_files": ["backend/main.py", "backend/app/agents/support_agent.py"],
+    "relevant_skills": ["OpenTelemetry", "Distributed tracing"],
+    "background_info": "Tracing is essential for debugging production AI pipelines",
+    "constraints": ["Use OpenTelemetry", "Integrate with LangSmith if possible"],
+    "anti_patterns": ["Don't create too many spans", "Don't trace sensitive data"]
+  },
+
+  "output_artifacts": [
+    {"type": "file", "path": "backend/app/middleware/tracing.py", "description": "Tracing middleware"},
+    {"type": "file", "path": "backend/app/utils/tracer.py", "description": "OpenTelemetry setup"}
+  ],
+
+  "execution": {
+    "estimated_complexity": "medium",
+    "estimated_tokens": 12000,
+    "max_context_percent": 40,
+    "requires_human_review": false,
+    "background_eligible": true,
+    "parallel_safe": true
+  },
+
+  "tdd_cycle": {
+    "red_phase": {"started_at": null, "tests_written": [], "tests_failing": true},
+    "green_phase": {"started_at": null, "implementation_files": [], "tests_passing": false},
+    "refactor_phase": {"started_at": null, "changes_made": [], "tests_still_passing": false}
+  },
+
+  "results": {
+    "started_at": null,
+    "completed_at": null,
+    "attempts": 0,
+    "validation_passed": false,
+    "code_review_passed": false,
+    "notes": "",
+    "learned_patterns": []
+  }
+}

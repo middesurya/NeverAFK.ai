@@ -1,0 +1,104 @@
+{
+  "$schema": "prd-tdd-schema-v2",
+  "id": "PRD-010",
+  "title": "Response Evaluation",
+  "priority": "P0",
+  "status": "pending",
+  "created": "2026-01-12",
+  "updated": "2026-01-12",
+
+  "goal": {
+    "summary": "Implement confidence scoring and hallucination detection for AI responses",
+    "user_story": "As a creator, I want to know when the AI is uncertain so I can review those responses",
+    "success_definition": "Each response includes confidence score and hallucination flags",
+    "out_of_scope": ["Human-in-the-loop review UI", "Automatic response correction"]
+  },
+
+  "tdd": {
+    "test_first": true,
+    "test_framework": "pytest",
+    "test_files": ["backend/tests/test_response_evaluation.py"],
+    "coverage_target": 80,
+    "mutation_testing": false
+  },
+
+  "acceptance_criteria": [
+    {
+      "id": "AC-1",
+      "given": "AI response with strong source matches",
+      "when": "Confidence is calculated",
+      "then": "Returns high confidence score (>0.8)",
+      "test_file": "backend/tests/test_response_evaluation.py",
+      "test_command": "cd backend && pytest tests/test_response_evaluation.py::test_high_confidence -v"
+    },
+    {
+      "id": "AC-2",
+      "given": "AI response with weak source matches",
+      "when": "Confidence is calculated",
+      "then": "Returns low confidence score (<0.5)",
+      "test_file": "backend/tests/test_response_evaluation.py",
+      "test_command": "cd backend && pytest tests/test_response_evaluation.py::test_low_confidence -v"
+    },
+    {
+      "id": "AC-3",
+      "given": "Response with claims not in sources",
+      "when": "Hallucination detection runs",
+      "then": "Flags potential hallucination",
+      "test_file": "backend/tests/test_response_evaluation.py",
+      "test_command": "cd backend && pytest tests/test_response_evaluation.py::test_hallucination_detection -v"
+    },
+    {
+      "id": "AC-4",
+      "given": "Low confidence response",
+      "when": "Response is returned",
+      "then": "Includes needs_review flag for creator dashboard",
+      "test_file": "backend/tests/test_response_evaluation.py",
+      "test_command": "cd backend && pytest tests/test_response_evaluation.py::test_needs_review_flag -v"
+    }
+  ],
+
+  "dependencies": {
+    "prds": ["PRD-001", "PRD-002", "PRD-003"],
+    "files": ["backend/app/agents/support_agent.py"],
+    "external_apis": [],
+    "environment": []
+  },
+
+  "context": {
+    "relevant_files": ["backend/app/agents/support_agent.py"],
+    "relevant_skills": ["NLP evaluation", "Semantic similarity"],
+    "background_info": "Response evaluation shows AI/ML sophistication and helps maintain quality",
+    "constraints": ["Must not significantly increase latency", "Confidence must be calibrated"],
+    "anti_patterns": ["Don't use arbitrary thresholds", "Don't block low-confidence responses"]
+  },
+
+  "output_artifacts": [
+    {"type": "file", "path": "backend/app/services/response_evaluator.py", "description": "Response evaluation service"},
+    {"type": "file", "path": "backend/app/models/response.py", "description": "Response model with confidence"}
+  ],
+
+  "execution": {
+    "estimated_complexity": "medium",
+    "estimated_tokens": 15000,
+    "max_context_percent": 45,
+    "requires_human_review": false,
+    "background_eligible": true,
+    "parallel_safe": true
+  },
+
+  "tdd_cycle": {
+    "red_phase": {"started_at": null, "tests_written": [], "tests_failing": true},
+    "green_phase": {"started_at": null, "implementation_files": [], "tests_passing": false},
+    "refactor_phase": {"started_at": null, "changes_made": [], "tests_still_passing": false}
+  },
+
+  "results": {
+    "started_at": null,
+    "completed_at": null,
+    "attempts": 0,
+    "validation_passed": false,
+    "code_review_passed": false,
+    "notes": "",
+    "learned_patterns": []
+  }
+}

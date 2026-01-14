@@ -1,0 +1,105 @@
+{
+  "$schema": "prd-tdd-schema-v2",
+  "id": "PRD-005",
+  "title": "Test Coverage Reporting",
+  "priority": "P0",
+  "status": "complete",
+  "created": "2026-01-12",
+  "updated": "2026-01-12",
+
+  "goal": {
+    "summary": "Add test coverage reporting with 80%+ target and coverage badge for README",
+    "user_story": "As a developer, I want coverage reports so I can identify untested code paths",
+    "success_definition": "Coverage runs automatically, reports to console, and badge shows in README",
+    "out_of_scope": ["Mutation testing", "Frontend coverage"]
+  },
+
+  "tdd": {
+    "test_first": true,
+    "test_framework": "pytest",
+    "test_files": ["backend/tests/test_coverage_setup.py"],
+    "coverage_target": 80,
+    "mutation_testing": false
+  },
+
+  "acceptance_criteria": [
+    {
+      "id": "AC-1",
+      "given": "pytest-cov is installed",
+      "when": "pytest --cov is run",
+      "then": "Coverage report is generated to console",
+      "test_file": "backend/tests/test_coverage_setup.py",
+      "test_command": "cd backend && pytest --cov=app --cov-report=term-missing tests/"
+    },
+    {
+      "id": "AC-2",
+      "given": "Coverage configuration",
+      "when": "Coverage runs",
+      "then": "XML report is generated for CI",
+      "test_file": "backend/tests/test_coverage_setup.py",
+      "test_command": "cd backend && pytest --cov=app --cov-report=xml tests/"
+    },
+    {
+      "id": "AC-3",
+      "given": "All tests pass",
+      "when": "Coverage is calculated",
+      "then": "Coverage is >= 80%",
+      "test_file": "backend/tests/test_coverage_setup.py",
+      "test_command": "cd backend && pytest --cov=app --cov-fail-under=80 tests/"
+    },
+    {
+      "id": "AC-4",
+      "given": "README.md",
+      "when": "User views repository",
+      "then": "Coverage badge displays current percentage",
+      "test_file": "backend/tests/test_coverage_setup.py",
+      "test_command": "grep -q 'coverage' README.md"
+    }
+  ],
+
+  "dependencies": {
+    "prds": ["PRD-001", "PRD-003", "PRD-004"],
+    "files": ["backend/requirements.txt", "backend/pytest.ini"],
+    "external_apis": [],
+    "environment": []
+  },
+
+  "context": {
+    "relevant_files": ["backend/pytest.ini", "backend/requirements.txt", "README.md"],
+    "relevant_skills": ["pytest-cov", "Coverage reporting"],
+    "background_info": "Coverage metrics show test completeness and are expected in professional projects",
+    "constraints": ["Must achieve 80% minimum", "Generate both console and XML reports"],
+    "anti_patterns": ["Don't exclude critical code from coverage", "Don't add tests just for coverage"]
+  },
+
+  "output_artifacts": [
+    {"type": "file", "path": "backend/.coveragerc", "description": "Coverage configuration"},
+    {"type": "file", "path": "backend/pytest.ini", "description": "Updated pytest config with coverage"},
+    {"type": "file", "path": "README.md", "description": "Updated with coverage badge"}
+  ],
+
+  "execution": {
+    "estimated_complexity": "small",
+    "estimated_tokens": 8000,
+    "max_context_percent": 35,
+    "requires_human_review": false,
+    "background_eligible": true,
+    "parallel_safe": true
+  },
+
+  "tdd_cycle": {
+    "red_phase": {"started_at": null, "tests_written": [], "tests_failing": true},
+    "green_phase": {"started_at": null, "implementation_files": [], "tests_passing": false},
+    "refactor_phase": {"started_at": null, "changes_made": [], "tests_still_passing": false}
+  },
+
+  "results": {
+    "started_at": null,
+    "completed_at": null,
+    "attempts": 0,
+    "validation_passed": false,
+    "code_review_passed": false,
+    "notes": "",
+    "learned_patterns": []
+  }
+}

@@ -1,0 +1,105 @@
+{
+  "$schema": "prd-tdd-schema-v2",
+  "id": "PRD-023",
+  "title": "GraphQL Endpoint",
+  "priority": "P2",
+  "status": "pending",
+  "created": "2026-01-12",
+  "updated": "2026-01-12",
+
+  "goal": {
+    "summary": "Add GraphQL endpoint as alternative to REST for flexible querying",
+    "user_story": "As an API consumer, I want GraphQL so I can request exactly the data I need",
+    "success_definition": "GraphQL endpoint works alongside REST with equivalent functionality",
+    "out_of_scope": ["GraphQL subscriptions", "Persisted queries"]
+  },
+
+  "tdd": {
+    "test_first": true,
+    "test_framework": "pytest",
+    "test_files": ["backend/tests/test_graphql.py"],
+    "coverage_target": 80,
+    "mutation_testing": false
+  },
+
+  "acceptance_criteria": [
+    {
+      "id": "AC-1",
+      "given": "GraphQL endpoint",
+      "when": "Query for conversations is sent",
+      "then": "Returns requested fields only",
+      "test_file": "backend/tests/test_graphql.py",
+      "test_command": "cd backend && pytest tests/test_graphql.py::test_conversations_query -v"
+    },
+    {
+      "id": "AC-2",
+      "given": "GraphQL mutation",
+      "when": "Chat mutation is sent",
+      "then": "Returns AI response with requested fields",
+      "test_file": "backend/tests/test_graphql.py",
+      "test_command": "cd backend && pytest tests/test_graphql.py::test_chat_mutation -v"
+    },
+    {
+      "id": "AC-3",
+      "given": "GraphQL playground",
+      "when": "GET /graphql is accessed",
+      "then": "Shows interactive playground UI",
+      "test_file": "backend/tests/test_graphql.py",
+      "test_command": "cd backend && pytest tests/test_graphql.py::test_playground -v"
+    },
+    {
+      "id": "AC-4",
+      "given": "Invalid query",
+      "when": "Malformed GraphQL is sent",
+      "then": "Returns proper GraphQL error format",
+      "test_file": "backend/tests/test_graphql.py",
+      "test_command": "cd backend && pytest tests/test_graphql.py::test_error_handling -v"
+    }
+  ],
+
+  "dependencies": {
+    "prds": ["PRD-001", "PRD-004"],
+    "files": ["backend/main.py"],
+    "external_apis": [],
+    "environment": []
+  },
+
+  "context": {
+    "relevant_files": ["backend/main.py"],
+    "relevant_skills": ["GraphQL", "Strawberry/Ariadne"],
+    "background_info": "GraphQL shows API design sophistication",
+    "constraints": ["Use Strawberry for type safety", "Mirror REST functionality"],
+    "anti_patterns": ["Don't over-nest resolvers", "Don't allow unbounded queries"]
+  },
+
+  "output_artifacts": [
+    {"type": "file", "path": "backend/app/graphql/schema.py", "description": "GraphQL schema"},
+    {"type": "file", "path": "backend/app/graphql/resolvers.py", "description": "GraphQL resolvers"},
+    {"type": "file", "path": "backend/app/graphql/types.py", "description": "GraphQL types"}
+  ],
+
+  "execution": {
+    "estimated_complexity": "medium",
+    "estimated_tokens": 15000,
+    "max_context_percent": 45,
+    "requires_human_review": false,
+    "background_eligible": true,
+    "parallel_safe": true
+  },
+
+  "tdd_cycle": {
+    "red_phase": {"started_at": null, "tests_written": [], "tests_failing": true},
+    "green_phase": {"started_at": null, "implementation_files": [], "tests_passing": false},
+    "refactor_phase": {"started_at": null, "changes_made": [], "tests_still_passing": false}
+  },
+
+  "results": {
+    "started_at": null,
+    "completed_at": null,
+    "attempts": 0,
+    "validation_passed": false,
+    "code_review_passed": false,
+    "notes": "",
+    "learned_patterns": []
+  }
+}

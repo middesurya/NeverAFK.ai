@@ -1,0 +1,104 @@
+{
+  "$schema": "prd-tdd-schema-v2",
+  "id": "PRD-009",
+  "title": "Prompt Injection Protection",
+  "priority": "P0",
+  "status": "pending",
+  "created": "2026-01-12",
+  "updated": "2026-01-12",
+
+  "goal": {
+    "summary": "Implement input sanitization and prompt injection detection for LLM security",
+    "user_story": "As a system owner, I want protection against prompt injection so users can't manipulate the AI",
+    "success_definition": "Malicious inputs are detected and sanitized before reaching the LLM",
+    "out_of_scope": ["Output filtering", "Content moderation"]
+  },
+
+  "tdd": {
+    "test_first": true,
+    "test_framework": "pytest",
+    "test_files": ["backend/tests/test_prompt_injection.py"],
+    "coverage_target": 80,
+    "mutation_testing": false
+  },
+
+  "acceptance_criteria": [
+    {
+      "id": "AC-1",
+      "given": "Normal user input",
+      "when": "Input is sanitized",
+      "then": "Input passes through unchanged",
+      "test_file": "backend/tests/test_prompt_injection.py",
+      "test_command": "cd backend && pytest tests/test_prompt_injection.py::test_normal_input -v"
+    },
+    {
+      "id": "AC-2",
+      "given": "Input with 'ignore previous instructions'",
+      "when": "Injection detection runs",
+      "then": "Input is flagged as potential injection",
+      "test_file": "backend/tests/test_prompt_injection.py",
+      "test_command": "cd backend && pytest tests/test_prompt_injection.py::test_detect_instruction_override -v"
+    },
+    {
+      "id": "AC-3",
+      "given": "Input with role-playing attempts",
+      "when": "Injection detection runs",
+      "then": "Input is flagged as potential injection",
+      "test_file": "backend/tests/test_prompt_injection.py",
+      "test_command": "cd backend && pytest tests/test_prompt_injection.py::test_detect_role_playing -v"
+    },
+    {
+      "id": "AC-4",
+      "given": "Detected injection attempt",
+      "when": "Request is processed",
+      "then": "Returns safe error response, logs the attempt",
+      "test_file": "backend/tests/test_prompt_injection.py",
+      "test_command": "cd backend && pytest tests/test_prompt_injection.py::test_injection_response -v"
+    }
+  ],
+
+  "dependencies": {
+    "prds": ["PRD-001"],
+    "files": ["backend/main.py"],
+    "external_apis": [],
+    "environment": []
+  },
+
+  "context": {
+    "relevant_files": ["backend/main.py"],
+    "relevant_skills": ["LLM security", "Input validation"],
+    "background_info": "Prompt injection is a critical LLM security concern - interviewers love this",
+    "constraints": ["Must not block legitimate queries", "Log all detection attempts"],
+    "anti_patterns": ["Don't rely only on blocklists", "Don't expose detection logic in errors"]
+  },
+
+  "output_artifacts": [
+    {"type": "file", "path": "backend/app/security/prompt_guard.py", "description": "Injection detection"},
+    {"type": "file", "path": "backend/app/middleware/input_sanitizer.py", "description": "Input sanitization middleware"}
+  ],
+
+  "execution": {
+    "estimated_complexity": "medium",
+    "estimated_tokens": 12000,
+    "max_context_percent": 40,
+    "requires_human_review": true,
+    "background_eligible": true,
+    "parallel_safe": true
+  },
+
+  "tdd_cycle": {
+    "red_phase": {"started_at": null, "tests_written": [], "tests_failing": true},
+    "green_phase": {"started_at": null, "implementation_files": [], "tests_passing": false},
+    "refactor_phase": {"started_at": null, "changes_made": [], "tests_still_passing": false}
+  },
+
+  "results": {
+    "started_at": null,
+    "completed_at": null,
+    "attempts": 0,
+    "validation_passed": false,
+    "code_review_passed": false,
+    "notes": "",
+    "learned_patterns": []
+  }
+}

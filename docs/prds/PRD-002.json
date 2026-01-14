@@ -1,0 +1,108 @@
+{
+  "$schema": "prd-tdd-schema-v2",
+  "id": "PRD-002",
+  "title": "Mock External Services",
+  "priority": "P0",
+  "status": "complete",
+  "created": "2026-01-12",
+  "updated": "2026-01-12",
+
+  "goal": {
+    "summary": "Create mock implementations for OpenAI, Pinecone, and Supabase to enable isolated testing",
+    "user_story": "As a developer, I want mocked external services so that tests run fast and don't require API keys",
+    "success_definition": "All external service calls can be mocked with predictable responses",
+    "out_of_scope": ["Testing actual API integrations", "E2E tests with real services"]
+  },
+
+  "tdd": {
+    "test_first": true,
+    "test_framework": "pytest",
+    "test_files": ["backend/tests/mocks/test_mocks.py"],
+    "coverage_target": 80,
+    "mutation_testing": false
+  },
+
+  "acceptance_criteria": [
+    {
+      "id": "AC-1",
+      "given": "MockOpenAI fixture",
+      "when": "Chat completion is called",
+      "then": "Returns predictable mock response without API call",
+      "test_file": "backend/tests/mocks/test_mocks.py",
+      "test_command": "cd backend && pytest tests/mocks/test_mocks.py::test_mock_openai -v"
+    },
+    {
+      "id": "AC-2",
+      "given": "MockPinecone fixture",
+      "when": "Similarity search is performed",
+      "then": "Returns mock documents with scores",
+      "test_file": "backend/tests/mocks/test_mocks.py",
+      "test_command": "cd backend && pytest tests/mocks/test_mocks.py::test_mock_pinecone -v"
+    },
+    {
+      "id": "AC-3",
+      "given": "MockSupabase fixture",
+      "when": "Database query is executed",
+      "then": "Returns mock data matching expected schema",
+      "test_file": "backend/tests/mocks/test_mocks.py",
+      "test_command": "cd backend && pytest tests/mocks/test_mocks.py::test_mock_supabase -v"
+    },
+    {
+      "id": "AC-4",
+      "given": "Any mock fixture",
+      "when": "Test completes",
+      "then": "Mock call history is available for assertions",
+      "test_file": "backend/tests/mocks/test_mocks.py",
+      "test_command": "cd backend && pytest tests/mocks/test_mocks.py::test_mock_call_history -v"
+    }
+  ],
+
+  "dependencies": {
+    "prds": ["PRD-001"],
+    "files": ["backend/app/services/vector_store.py", "backend/app/agents/support_agent.py"],
+    "external_apis": [],
+    "environment": []
+  },
+
+  "context": {
+    "relevant_files": ["backend/app/services/vector_store.py", "backend/app/agents/support_agent.py"],
+    "relevant_skills": ["Pytest fixtures", "Python mocking"],
+    "background_info": "Mocks enable testing without API keys and ensure fast, deterministic tests",
+    "constraints": ["Mocks must match real service interfaces", "Use pytest-mock or unittest.mock"],
+    "anti_patterns": ["Don't mock at too low a level", "Don't create mocks that always succeed"]
+  },
+
+  "output_artifacts": [
+    {"type": "directory", "path": "backend/tests/mocks/", "description": "Mock implementations"},
+    {"type": "file", "path": "backend/tests/mocks/__init__.py", "description": "Mocks package"},
+    {"type": "file", "path": "backend/tests/mocks/openai_mock.py", "description": "OpenAI mock"},
+    {"type": "file", "path": "backend/tests/mocks/pinecone_mock.py", "description": "Pinecone mock"},
+    {"type": "file", "path": "backend/tests/mocks/supabase_mock.py", "description": "Supabase mock"},
+    {"type": "file", "path": "backend/tests/conftest.py", "description": "Updated with mock fixtures"}
+  ],
+
+  "execution": {
+    "estimated_complexity": "medium",
+    "estimated_tokens": 15000,
+    "max_context_percent": 50,
+    "requires_human_review": false,
+    "background_eligible": true,
+    "parallel_safe": true
+  },
+
+  "tdd_cycle": {
+    "red_phase": {"started_at": null, "tests_written": [], "tests_failing": true},
+    "green_phase": {"started_at": null, "implementation_files": [], "tests_passing": false},
+    "refactor_phase": {"started_at": null, "changes_made": [], "tests_still_passing": false}
+  },
+
+  "results": {
+    "started_at": null,
+    "completed_at": null,
+    "attempts": 0,
+    "validation_passed": false,
+    "code_review_passed": false,
+    "notes": "",
+    "learned_patterns": []
+  }
+}

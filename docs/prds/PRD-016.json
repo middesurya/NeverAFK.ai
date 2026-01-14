@@ -1,0 +1,105 @@
+{
+  "$schema": "prd-tdd-schema-v2",
+  "id": "PRD-016",
+  "title": "CI/CD Pipeline",
+  "priority": "P1",
+  "status": "pending",
+  "created": "2026-01-12",
+  "updated": "2026-01-12",
+
+  "goal": {
+    "summary": "Set up GitHub Actions CI/CD with test matrix, linting, and auto-deploy",
+    "user_story": "As a developer, I want automated CI/CD so code is validated and deployed automatically",
+    "success_definition": "Every push runs tests, PRs get preview deployments, main auto-deploys",
+    "out_of_scope": ["Multi-environment deployments", "Manual approval gates"]
+  },
+
+  "tdd": {
+    "test_first": true,
+    "test_framework": "pytest",
+    "test_files": [],
+    "coverage_target": 0,
+    "mutation_testing": false
+  },
+
+  "acceptance_criteria": [
+    {
+      "id": "AC-1",
+      "given": "Push to any branch",
+      "when": "CI workflow runs",
+      "then": "Runs linting (ESLint, Ruff) and type checking (tsc, mypy)",
+      "test_file": ".github/workflows/ci.yml",
+      "test_command": "gh workflow run ci.yml"
+    },
+    {
+      "id": "AC-2",
+      "given": "Push to any branch",
+      "when": "CI workflow runs",
+      "then": "Runs all tests with coverage reporting",
+      "test_file": ".github/workflows/ci.yml",
+      "test_command": "gh workflow run ci.yml"
+    },
+    {
+      "id": "AC-3",
+      "given": "PR is opened",
+      "when": "CI completes",
+      "then": "PR gets test results comment and coverage badge",
+      "test_file": ".github/workflows/ci.yml",
+      "test_command": "gh pr checks"
+    },
+    {
+      "id": "AC-4",
+      "given": "Push to main",
+      "when": "CI passes",
+      "then": "Auto-deploys to production (Vercel + Railway)",
+      "test_file": ".github/workflows/deploy.yml",
+      "test_command": "gh workflow run deploy.yml"
+    }
+  ],
+
+  "dependencies": {
+    "prds": ["PRD-001", "PRD-005"],
+    "files": [],
+    "external_apis": ["GitHub Actions", "Vercel", "Railway"],
+    "environment": ["VERCEL_TOKEN", "RAILWAY_TOKEN"]
+  },
+
+  "context": {
+    "relevant_files": ["backend/pytest.ini", "frontend/package.json"],
+    "relevant_skills": ["GitHub Actions", "CI/CD"],
+    "background_info": "CI/CD is expected in all professional projects",
+    "constraints": ["Use GitHub Actions", "Cache dependencies for speed"],
+    "anti_patterns": ["Don't skip tests", "Don't deploy on test failure"]
+  },
+
+  "output_artifacts": [
+    {"type": "file", "path": ".github/workflows/ci.yml", "description": "CI workflow"},
+    {"type": "file", "path": ".github/workflows/deploy.yml", "description": "Deploy workflow"},
+    {"type": "file", "path": "README.md", "description": "Updated with CI badge"}
+  ],
+
+  "execution": {
+    "estimated_complexity": "medium",
+    "estimated_tokens": 12000,
+    "max_context_percent": 40,
+    "requires_human_review": true,
+    "background_eligible": true,
+    "parallel_safe": true
+  },
+
+  "tdd_cycle": {
+    "red_phase": {"started_at": null, "tests_written": [], "tests_failing": true},
+    "green_phase": {"started_at": null, "implementation_files": [], "tests_passing": false},
+    "refactor_phase": {"started_at": null, "changes_made": [], "tests_still_passing": false}
+  },
+
+  "results": {
+    "started_at": null,
+    "completed_at": null,
+    "attempts": 0,
+    "validation_passed": false,
+    "code_review_passed": false,
+    "notes": "",
+    "learned_patterns": []
+  }
+}

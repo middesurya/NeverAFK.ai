@@ -1,0 +1,104 @@
+{
+  "$schema": "prd-tdd-schema-v2",
+  "id": "PRD-014",
+  "title": "Circuit Breakers",
+  "priority": "P1",
+  "status": "pending",
+  "created": "2026-01-12",
+  "updated": "2026-01-12",
+
+  "goal": {
+    "summary": "Implement circuit breaker pattern for graceful degradation when external APIs fail",
+    "user_story": "As a system, I want circuit breakers so external API failures don't cascade",
+    "success_definition": "Failed services are isolated, system returns graceful errors",
+    "out_of_scope": ["Auto-recovery notifications", "Manual circuit override UI"]
+  },
+
+  "tdd": {
+    "test_first": true,
+    "test_framework": "pytest",
+    "test_files": ["backend/tests/test_circuit_breaker.py"],
+    "coverage_target": 80,
+    "mutation_testing": false
+  },
+
+  "acceptance_criteria": [
+    {
+      "id": "AC-1",
+      "given": "Service is healthy",
+      "when": "Request is made",
+      "then": "Circuit is closed, request proceeds normally",
+      "test_file": "backend/tests/test_circuit_breaker.py",
+      "test_command": "cd backend && pytest tests/test_circuit_breaker.py::test_closed_circuit -v"
+    },
+    {
+      "id": "AC-2",
+      "given": "Multiple failures occur",
+      "when": "Failure threshold is exceeded",
+      "then": "Circuit opens, subsequent requests fail fast",
+      "test_file": "backend/tests/test_circuit_breaker.py",
+      "test_command": "cd backend && pytest tests/test_circuit_breaker.py::test_circuit_opens -v"
+    },
+    {
+      "id": "AC-3",
+      "given": "Circuit is open",
+      "when": "Timeout expires",
+      "then": "Circuit enters half-open, allows test request",
+      "test_file": "backend/tests/test_circuit_breaker.py",
+      "test_command": "cd backend && pytest tests/test_circuit_breaker.py::test_half_open -v"
+    },
+    {
+      "id": "AC-4",
+      "given": "Circuit is open",
+      "when": "Request fails fast",
+      "then": "Returns graceful error with explanation",
+      "test_file": "backend/tests/test_circuit_breaker.py",
+      "test_command": "cd backend && pytest tests/test_circuit_breaker.py::test_graceful_error -v"
+    }
+  ],
+
+  "dependencies": {
+    "prds": ["PRD-001", "PRD-013"],
+    "files": ["backend/app/services/vector_store.py", "backend/app/agents/support_agent.py"],
+    "external_apis": [],
+    "environment": []
+  },
+
+  "context": {
+    "relevant_files": ["backend/app/services/vector_store.py"],
+    "relevant_skills": ["Circuit breaker pattern", "Resilience patterns"],
+    "background_info": "Circuit breakers prevent cascading failures - shows senior-level thinking",
+    "constraints": ["Use pybreaker or tenacity", "Configure per-service thresholds"],
+    "anti_patterns": ["Don't use same settings for all services", "Don't ignore circuit state in logs"]
+  },
+
+  "output_artifacts": [
+    {"type": "file", "path": "backend/app/utils/circuit_breaker.py", "description": "Circuit breaker implementation"},
+    {"type": "file", "path": "backend/app/config/resilience.py", "description": "Resilience configuration"}
+  ],
+
+  "execution": {
+    "estimated_complexity": "medium",
+    "estimated_tokens": 12000,
+    "max_context_percent": 40,
+    "requires_human_review": false,
+    "background_eligible": true,
+    "parallel_safe": true
+  },
+
+  "tdd_cycle": {
+    "red_phase": {"started_at": null, "tests_written": [], "tests_failing": true},
+    "green_phase": {"started_at": null, "implementation_files": [], "tests_passing": false},
+    "refactor_phase": {"started_at": null, "changes_made": [], "tests_still_passing": false}
+  },
+
+  "results": {
+    "started_at": null,
+    "completed_at": null,
+    "attempts": 0,
+    "validation_passed": false,
+    "code_review_passed": false,
+    "notes": "",
+    "learned_patterns": []
+  }
+}

@@ -1,0 +1,105 @@
+{
+  "$schema": "prd-tdd-schema-v2",
+  "id": "PRD-024",
+  "title": "Webhook System",
+  "priority": "P2",
+  "status": "pending",
+  "created": "2026-01-12",
+  "updated": "2026-01-12",
+
+  "goal": {
+    "summary": "Implement webhook system for event-driven integrations with external services",
+    "user_story": "As a creator, I want webhooks so I can integrate with my existing tools",
+    "success_definition": "Webhooks fire on events, allow registration, and include retry logic",
+    "out_of_scope": ["Webhook marketplace", "OAuth for webhooks"]
+  },
+
+  "tdd": {
+    "test_first": true,
+    "test_framework": "pytest",
+    "test_files": ["backend/tests/test_webhooks.py"],
+    "coverage_target": 80,
+    "mutation_testing": false
+  },
+
+  "acceptance_criteria": [
+    {
+      "id": "AC-1",
+      "given": "Creator registers webhook",
+      "when": "POST /webhooks is called",
+      "then": "Webhook is stored with URL and events",
+      "test_file": "backend/tests/test_webhooks.py",
+      "test_command": "cd backend && pytest tests/test_webhooks.py::test_register_webhook -v"
+    },
+    {
+      "id": "AC-2",
+      "given": "Registered webhook",
+      "when": "Event occurs (new conversation)",
+      "then": "Webhook is called with event payload",
+      "test_file": "backend/tests/test_webhooks.py",
+      "test_command": "cd backend && pytest tests/test_webhooks.py::test_webhook_fires -v"
+    },
+    {
+      "id": "AC-3",
+      "given": "Webhook call fails",
+      "when": "Retry limit not reached",
+      "then": "Retries with exponential backoff",
+      "test_file": "backend/tests/test_webhooks.py",
+      "test_command": "cd backend && pytest tests/test_webhooks.py::test_webhook_retry -v"
+    },
+    {
+      "id": "AC-4",
+      "given": "Webhook payload",
+      "when": "Payload is sent",
+      "then": "Includes HMAC signature for verification",
+      "test_file": "backend/tests/test_webhooks.py",
+      "test_command": "cd backend && pytest tests/test_webhooks.py::test_webhook_signature -v"
+    }
+  ],
+
+  "dependencies": {
+    "prds": ["PRD-001", "PRD-015"],
+    "files": ["backend/main.py"],
+    "external_apis": [],
+    "environment": ["WEBHOOK_SECRET"]
+  },
+
+  "context": {
+    "relevant_files": ["backend/main.py"],
+    "relevant_skills": ["Webhooks", "Event-driven architecture"],
+    "background_info": "Webhooks enable integration with Zapier, n8n, and other tools",
+    "constraints": ["Use background jobs for delivery", "Include HMAC signatures"],
+    "anti_patterns": ["Don't block on webhook delivery", "Don't retry forever"]
+  },
+
+  "output_artifacts": [
+    {"type": "file", "path": "backend/app/routes/webhooks.py", "description": "Webhook management endpoints"},
+    {"type": "file", "path": "backend/app/services/webhook_dispatcher.py", "description": "Webhook dispatch service"},
+    {"type": "file", "path": "backend/app/tasks/webhook_tasks.py", "description": "Async webhook tasks"}
+  ],
+
+  "execution": {
+    "estimated_complexity": "medium",
+    "estimated_tokens": 15000,
+    "max_context_percent": 45,
+    "requires_human_review": false,
+    "background_eligible": true,
+    "parallel_safe": true
+  },
+
+  "tdd_cycle": {
+    "red_phase": {"started_at": null, "tests_written": [], "tests_failing": true},
+    "green_phase": {"started_at": null, "implementation_files": [], "tests_passing": false},
+    "refactor_phase": {"started_at": null, "changes_made": [], "tests_still_passing": false}
+  },
+
+  "results": {
+    "started_at": null,
+    "completed_at": null,
+    "attempts": 0,
+    "validation_passed": false,
+    "code_review_passed": false,
+    "notes": "",
+    "learned_patterns": []
+  }
+}

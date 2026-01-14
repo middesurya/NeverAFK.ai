@@ -1,0 +1,105 @@
+{
+  "$schema": "prd-tdd-schema-v2",
+  "id": "PRD-020",
+  "title": "Error Tracking (Sentry)",
+  "priority": "P1",
+  "status": "pending",
+  "created": "2026-01-12",
+  "updated": "2026-01-12",
+
+  "goal": {
+    "summary": "Integrate Sentry for error tracking with context in both frontend and backend",
+    "user_story": "As a developer, I want to be notified of production errors with full context",
+    "success_definition": "Errors are captured with stack traces, user context, and breadcrumbs",
+    "out_of_scope": ["Performance monitoring", "Session replay"]
+  },
+
+  "tdd": {
+    "test_first": true,
+    "test_framework": "pytest",
+    "test_files": ["backend/tests/test_sentry.py"],
+    "coverage_target": 80,
+    "mutation_testing": false
+  },
+
+  "acceptance_criteria": [
+    {
+      "id": "AC-1",
+      "given": "Backend error occurs",
+      "when": "Exception is raised",
+      "then": "Error is captured in Sentry with stack trace",
+      "test_file": "backend/tests/test_sentry.py",
+      "test_command": "cd backend && pytest tests/test_sentry.py::test_backend_error_capture -v"
+    },
+    {
+      "id": "AC-2",
+      "given": "Frontend error occurs",
+      "when": "React error boundary catches",
+      "then": "Error is sent to Sentry with component tree",
+      "test_file": "frontend/__tests__/sentry.test.tsx",
+      "test_command": "cd frontend && npm test -- sentry"
+    },
+    {
+      "id": "AC-3",
+      "given": "Error captured",
+      "when": "Sentry receives event",
+      "then": "Includes user context and request data",
+      "test_file": "backend/tests/test_sentry.py",
+      "test_command": "cd backend && pytest tests/test_sentry.py::test_error_context -v"
+    },
+    {
+      "id": "AC-4",
+      "given": "Error captured",
+      "when": "Sentry receives event",
+      "then": "Includes breadcrumbs showing recent actions",
+      "test_file": "backend/tests/test_sentry.py",
+      "test_command": "cd backend && pytest tests/test_sentry.py::test_breadcrumbs -v"
+    }
+  ],
+
+  "dependencies": {
+    "prds": ["PRD-001"],
+    "files": ["backend/main.py", "frontend/src/app/layout.tsx"],
+    "external_apis": ["Sentry"],
+    "environment": ["SENTRY_DSN"]
+  },
+
+  "context": {
+    "relevant_files": ["backend/main.py", "frontend/src/app/layout.tsx"],
+    "relevant_skills": ["Sentry SDK", "Error tracking"],
+    "background_info": "Sentry integration is quick to add and shows production awareness",
+    "constraints": ["Use official Sentry SDKs", "Filter sensitive data"],
+    "anti_patterns": ["Don't capture expected errors", "Don't log PII to Sentry"]
+  },
+
+  "output_artifacts": [
+    {"type": "file", "path": "backend/app/utils/sentry.py", "description": "Sentry configuration"},
+    {"type": "file", "path": "frontend/sentry.client.config.ts", "description": "Frontend Sentry config"},
+    {"type": "file", "path": "frontend/sentry.server.config.ts", "description": "Server Sentry config"}
+  ],
+
+  "execution": {
+    "estimated_complexity": "small",
+    "estimated_tokens": 10000,
+    "max_context_percent": 35,
+    "requires_human_review": false,
+    "background_eligible": true,
+    "parallel_safe": true
+  },
+
+  "tdd_cycle": {
+    "red_phase": {"started_at": null, "tests_written": [], "tests_failing": true},
+    "green_phase": {"started_at": null, "implementation_files": [], "tests_passing": false},
+    "refactor_phase": {"started_at": null, "changes_made": [], "tests_still_passing": false}
+  },
+
+  "results": {
+    "started_at": null,
+    "completed_at": null,
+    "attempts": 0,
+    "validation_passed": false,
+    "code_review_passed": false,
+    "notes": "",
+    "learned_patterns": []
+  }
+}

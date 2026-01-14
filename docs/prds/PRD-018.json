@@ -1,0 +1,104 @@
+{
+  "$schema": "prd-tdd-schema-v2",
+  "id": "PRD-018",
+  "title": "Health Checks & Metrics",
+  "priority": "P1",
+  "status": "pending",
+  "created": "2026-01-12",
+  "updated": "2026-01-12",
+
+  "goal": {
+    "summary": "Implement Prometheus-compatible health checks and metrics endpoints",
+    "user_story": "As an operator, I want health metrics so I can monitor system health",
+    "success_definition": "Health endpoint returns detailed status, metrics endpoint returns Prometheus format",
+    "out_of_scope": ["Grafana dashboards", "Alerting rules"]
+  },
+
+  "tdd": {
+    "test_first": true,
+    "test_framework": "pytest",
+    "test_files": ["backend/tests/test_health.py"],
+    "coverage_target": 80,
+    "mutation_testing": false
+  },
+
+  "acceptance_criteria": [
+    {
+      "id": "AC-1",
+      "given": "Health endpoint",
+      "when": "GET /health is called",
+      "then": "Returns status of all dependencies (DB, Redis, Pinecone)",
+      "test_file": "backend/tests/test_health.py",
+      "test_command": "cd backend && pytest tests/test_health.py::test_detailed_health -v"
+    },
+    {
+      "id": "AC-2",
+      "given": "Metrics endpoint",
+      "when": "GET /metrics is called",
+      "then": "Returns Prometheus-format metrics",
+      "test_file": "backend/tests/test_health.py",
+      "test_command": "cd backend && pytest tests/test_health.py::test_metrics_endpoint -v"
+    },
+    {
+      "id": "AC-3",
+      "given": "Request processed",
+      "when": "Metrics checked",
+      "then": "Includes request count, latency histogram, error rate",
+      "test_file": "backend/tests/test_health.py",
+      "test_command": "cd backend && pytest tests/test_health.py::test_request_metrics -v"
+    },
+    {
+      "id": "AC-4",
+      "given": "Dependency failure",
+      "when": "Health check runs",
+      "then": "Reports degraded status with failing component",
+      "test_file": "backend/tests/test_health.py",
+      "test_command": "cd backend && pytest tests/test_health.py::test_degraded_health -v"
+    }
+  ],
+
+  "dependencies": {
+    "prds": ["PRD-001"],
+    "files": ["backend/main.py"],
+    "external_apis": [],
+    "environment": []
+  },
+
+  "context": {
+    "relevant_files": ["backend/main.py"],
+    "relevant_skills": ["Prometheus", "Health checks"],
+    "background_info": "Prometheus metrics enable monitoring and alerting",
+    "constraints": ["Use prometheus-fastapi-instrumentator", "Include custom business metrics"],
+    "anti_patterns": ["Don't expose sensitive data in health checks", "Don't block on slow dependency checks"]
+  },
+
+  "output_artifacts": [
+    {"type": "file", "path": "backend/app/routes/health.py", "description": "Enhanced health endpoints"},
+    {"type": "file", "path": "backend/app/middleware/metrics.py", "description": "Prometheus metrics middleware"}
+  ],
+
+  "execution": {
+    "estimated_complexity": "small",
+    "estimated_tokens": 10000,
+    "max_context_percent": 35,
+    "requires_human_review": false,
+    "background_eligible": true,
+    "parallel_safe": true
+  },
+
+  "tdd_cycle": {
+    "red_phase": {"started_at": null, "tests_written": [], "tests_failing": true},
+    "green_phase": {"started_at": null, "implementation_files": [], "tests_passing": false},
+    "refactor_phase": {"started_at": null, "changes_made": [], "tests_still_passing": false}
+  },
+
+  "results": {
+    "started_at": null,
+    "completed_at": null,
+    "attempts": 0,
+    "validation_passed": false,
+    "code_review_passed": false,
+    "notes": "",
+    "learned_patterns": []
+  }
+}

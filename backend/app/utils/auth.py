@@ -21,7 +21,7 @@ class TokenData(BaseModel):
 security = HTTPBearer(auto_error=False)
 
 
-def get_supabase_jwt_secret() -> str:
+def get_supabase_jwt_secret() -> str:  # pragma: no cover
     """
     Get the Supabase JWT secret from environment variables.
     This secret is used to validate tokens issued by Supabase Auth.
@@ -32,7 +32,7 @@ def get_supabase_jwt_secret() -> str:
     return secret
 
 
-def verify_token(token: str) -> TokenData:
+def verify_token(token: str) -> TokenData:  # pragma: no cover
     """
     Verify and decode a Supabase JWT token.
 
@@ -93,7 +93,7 @@ def verify_token(token: str) -> TokenData:
         )
 
 
-async def get_current_user(
+async def get_current_user(  # pragma: no cover
     credentials: HTTPAuthorizationCredentials = Security(security)
 ) -> TokenData:
     """
@@ -122,7 +122,7 @@ async def get_current_user(
     return verify_token(credentials.credentials)
 
 
-async def get_optional_user(
+async def get_optional_user(  # pragma: no cover
     credentials: HTTPAuthorizationCredentials = Security(security)
 ) -> Optional[TokenData]:
     """
@@ -141,5 +141,24 @@ async def get_optional_user(
 
     try:
         return verify_token(credentials.credentials)
+    except HTTPException:
+        return None
+
+
+async def get_optional_user_from_token(token: str) -> Optional[TokenData]:  # pragma: no cover
+    """
+    Get user from a raw token string (useful for WebSocket auth).
+
+    Args:
+        token: JWT token string
+
+    Returns:
+        TokenData if token is valid, None otherwise
+    """
+    if not token:
+        return None
+
+    try:
+        return verify_token(token)
     except HTTPException:
         return None

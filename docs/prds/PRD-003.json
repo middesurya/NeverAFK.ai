@@ -1,0 +1,115 @@
+{
+  "$schema": "prd-tdd-schema-v2",
+  "id": "PRD-003",
+  "title": "Unit Tests for RAG Pipeline",
+  "priority": "P0",
+  "status": "complete",
+  "created": "2026-01-12",
+  "updated": "2026-01-12",
+
+  "goal": {
+    "summary": "Write unit tests for each LangGraph node in the RAG pipeline",
+    "user_story": "As a developer, I want isolated tests for each RAG component so I can identify failures quickly",
+    "success_definition": "Each LangGraph node has tests covering happy path and error cases",
+    "out_of_scope": ["Integration tests", "End-to-end tests"]
+  },
+
+  "tdd": {
+    "test_first": true,
+    "test_framework": "pytest",
+    "test_files": [
+      "backend/tests/test_support_agent.py",
+      "backend/tests/test_vector_store.py"
+    ],
+    "coverage_target": 80,
+    "mutation_testing": false
+  },
+
+  "acceptance_criteria": [
+    {
+      "id": "AC-1",
+      "given": "A user query and mock vector store",
+      "when": "Retrieval node is invoked",
+      "then": "Returns relevant documents from mock",
+      "test_file": "backend/tests/test_support_agent.py",
+      "test_command": "cd backend && pytest tests/test_support_agent.py::test_retrieval_node -v"
+    },
+    {
+      "id": "AC-2",
+      "given": "Retrieved documents and query",
+      "when": "Generation node is invoked",
+      "then": "Returns AI response with citations",
+      "test_file": "backend/tests/test_support_agent.py",
+      "test_command": "cd backend && pytest tests/test_support_agent.py::test_generation_node -v"
+    },
+    {
+      "id": "AC-3",
+      "given": "A low-confidence response",
+      "when": "Escalation node evaluates",
+      "then": "Flags for human review",
+      "test_file": "backend/tests/test_support_agent.py",
+      "test_command": "cd backend && pytest tests/test_support_agent.py::test_escalation_node -v"
+    },
+    {
+      "id": "AC-4",
+      "given": "Vector store service",
+      "when": "similarity_search is called with query",
+      "then": "Returns documents with scores",
+      "test_file": "backend/tests/test_vector_store.py",
+      "test_command": "cd backend && pytest tests/test_vector_store.py::test_similarity_search -v"
+    },
+    {
+      "id": "AC-5",
+      "given": "Vector store service",
+      "when": "add_documents is called",
+      "then": "Documents are indexed with correct namespace",
+      "test_file": "backend/tests/test_vector_store.py",
+      "test_command": "cd backend && pytest tests/test_vector_store.py::test_add_documents -v"
+    }
+  ],
+
+  "dependencies": {
+    "prds": ["PRD-001", "PRD-002"],
+    "files": ["backend/app/agents/support_agent.py", "backend/app/services/vector_store.py"],
+    "external_apis": [],
+    "environment": []
+  },
+
+  "context": {
+    "relevant_files": ["backend/app/agents/support_agent.py", "backend/app/services/vector_store.py"],
+    "relevant_skills": ["LangGraph testing", "Async pytest"],
+    "background_info": "Tests each node in isolation using mocked dependencies",
+    "constraints": ["Use mocks from PRD-002", "Test async functions properly"],
+    "anti_patterns": ["Don't test LangGraph internals", "Don't make actual API calls"]
+  },
+
+  "output_artifacts": [
+    {"type": "file", "path": "backend/tests/test_support_agent.py", "description": "LangGraph agent tests"},
+    {"type": "file", "path": "backend/tests/test_vector_store.py", "description": "Vector store unit tests"}
+  ],
+
+  "execution": {
+    "estimated_complexity": "medium",
+    "estimated_tokens": 20000,
+    "max_context_percent": 55,
+    "requires_human_review": false,
+    "background_eligible": true,
+    "parallel_safe": true
+  },
+
+  "tdd_cycle": {
+    "red_phase": {"started_at": null, "tests_written": [], "tests_failing": true},
+    "green_phase": {"started_at": null, "implementation_files": [], "tests_passing": false},
+    "refactor_phase": {"started_at": null, "changes_made": [], "tests_still_passing": false}
+  },
+
+  "results": {
+    "started_at": null,
+    "completed_at": null,
+    "attempts": 0,
+    "validation_passed": false,
+    "code_review_passed": false,
+    "notes": "",
+    "learned_patterns": []
+  }
+}

@@ -1,0 +1,119 @@
+{
+  "$schema": "prd-tdd-schema-v2",
+  "id": "PRD-004",
+  "title": "Integration Tests for API Endpoints",
+  "priority": "P0",
+  "status": "complete",
+  "created": "2026-01-12",
+  "updated": "2026-01-12",
+
+  "goal": {
+    "summary": "Write integration tests for all API endpoints with full request/response testing",
+    "user_story": "As a developer, I want API integration tests so I can verify endpoints work correctly",
+    "success_definition": "All API endpoints have tests covering success and error cases",
+    "out_of_scope": ["Frontend tests", "E2E browser tests"]
+  },
+
+  "tdd": {
+    "test_first": true,
+    "test_framework": "pytest",
+    "test_files": [
+      "backend/tests/test_chat.py",
+      "backend/tests/test_upload.py",
+      "backend/tests/test_conversations.py",
+      "backend/tests/test_health.py"
+    ],
+    "coverage_target": 80,
+    "mutation_testing": false
+  },
+
+  "acceptance_criteria": [
+    {
+      "id": "AC-1",
+      "given": "Valid chat message",
+      "when": "POST /chat is called",
+      "then": "Returns 200 with AI response and sources",
+      "test_file": "backend/tests/test_chat.py",
+      "test_command": "cd backend && pytest tests/test_chat.py::test_chat_success -v"
+    },
+    {
+      "id": "AC-2",
+      "given": "Missing message field",
+      "when": "POST /chat is called",
+      "then": "Returns 422 validation error",
+      "test_file": "backend/tests/test_chat.py",
+      "test_command": "cd backend && pytest tests/test_chat.py::test_chat_validation_error -v"
+    },
+    {
+      "id": "AC-3",
+      "given": "Valid file upload",
+      "when": "POST /upload/content is called",
+      "then": "Returns 200 with upload confirmation",
+      "test_file": "backend/tests/test_upload.py",
+      "test_command": "cd backend && pytest tests/test_upload.py::test_upload_success -v"
+    },
+    {
+      "id": "AC-4",
+      "given": "Valid creator_id",
+      "when": "GET /conversations/{creator_id} is called",
+      "then": "Returns list of conversations",
+      "test_file": "backend/tests/test_conversations.py",
+      "test_command": "cd backend && pytest tests/test_conversations.py::test_get_conversations -v"
+    },
+    {
+      "id": "AC-5",
+      "given": "Health endpoint",
+      "when": "GET /health is called",
+      "then": "Returns 200 with status ok",
+      "test_file": "backend/tests/test_health.py",
+      "test_command": "cd backend && pytest tests/test_health.py::test_health_check -v"
+    }
+  ],
+
+  "dependencies": {
+    "prds": ["PRD-001", "PRD-002"],
+    "files": ["backend/main.py"],
+    "external_apis": [],
+    "environment": []
+  },
+
+  "context": {
+    "relevant_files": ["backend/main.py", "backend/test_api.py"],
+    "relevant_skills": ["FastAPI TestClient", "HTTP testing"],
+    "background_info": "Tests full request/response cycle with mocked external services",
+    "constraints": ["Use FastAPI TestClient", "Mock external services"],
+    "anti_patterns": ["Don't test with real API keys", "Don't skip error case testing"]
+  },
+
+  "output_artifacts": [
+    {"type": "file", "path": "backend/tests/test_chat.py", "description": "Chat endpoint tests"},
+    {"type": "file", "path": "backend/tests/test_upload.py", "description": "Upload endpoint tests"},
+    {"type": "file", "path": "backend/tests/test_conversations.py", "description": "Conversations endpoint tests"},
+    {"type": "file", "path": "backend/tests/test_health.py", "description": "Health check tests"}
+  ],
+
+  "execution": {
+    "estimated_complexity": "medium",
+    "estimated_tokens": 18000,
+    "max_context_percent": 50,
+    "requires_human_review": false,
+    "background_eligible": true,
+    "parallel_safe": true
+  },
+
+  "tdd_cycle": {
+    "red_phase": {"started_at": null, "tests_written": [], "tests_failing": true},
+    "green_phase": {"started_at": null, "implementation_files": [], "tests_passing": false},
+    "refactor_phase": {"started_at": null, "changes_made": [], "tests_still_passing": false}
+  },
+
+  "results": {
+    "started_at": null,
+    "completed_at": null,
+    "attempts": 0,
+    "validation_passed": false,
+    "code_review_passed": false,
+    "notes": "",
+    "learned_patterns": []
+  }
+}

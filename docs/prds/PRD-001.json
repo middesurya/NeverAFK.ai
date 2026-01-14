@@ -1,0 +1,98 @@
+{
+  "$schema": "prd-tdd-schema-v2",
+  "id": "PRD-001",
+  "title": "Pytest Setup with Fixtures",
+  "priority": "P0",
+  "status": "complete",
+  "created": "2026-01-12",
+  "updated": "2026-01-12",
+
+  "goal": {
+    "summary": "Set up pytest infrastructure with reusable fixtures for backend testing",
+    "user_story": "As a developer, I want a robust pytest setup so that I can write consistent, maintainable tests",
+    "success_definition": "pytest runs successfully with fixtures for common test scenarios",
+    "out_of_scope": ["Actual test implementations", "Frontend testing"]
+  },
+
+  "tdd": {
+    "test_first": true,
+    "test_framework": "pytest",
+    "test_files": ["backend/tests/conftest.py", "backend/tests/test_setup.py"],
+    "coverage_target": 0,
+    "mutation_testing": false
+  },
+
+  "acceptance_criteria": [
+    {
+      "id": "AC-1",
+      "given": "A fresh test environment",
+      "when": "pytest is executed",
+      "then": "Test discovery finds all test files in backend/tests/",
+      "test_file": "backend/tests/test_setup.py",
+      "test_command": "cd backend && pytest tests/test_setup.py -v"
+    },
+    {
+      "id": "AC-2",
+      "given": "conftest.py with fixtures",
+      "when": "A test uses the app fixture",
+      "then": "FastAPI TestClient is available for HTTP requests",
+      "test_file": "backend/tests/test_setup.py",
+      "test_command": "cd backend && pytest tests/test_setup.py::test_app_fixture -v"
+    },
+    {
+      "id": "AC-3",
+      "given": "pytest.ini configuration",
+      "when": "pytest runs",
+      "then": "Async tests are supported via pytest-asyncio",
+      "test_file": "backend/tests/test_setup.py",
+      "test_command": "cd backend && pytest tests/test_setup.py::test_async_support -v"
+    }
+  ],
+
+  "dependencies": {
+    "prds": [],
+    "files": ["backend/main.py", "backend/requirements.txt"],
+    "external_apis": [],
+    "environment": ["PYTHONPATH"]
+  },
+
+  "context": {
+    "relevant_files": ["backend/main.py", "backend/requirements.txt"],
+    "relevant_skills": [],
+    "background_info": "Foundation for all backend testing. Must support async tests for FastAPI.",
+    "constraints": ["Must use pytest-asyncio for async support", "Fixtures must be reusable across test files"],
+    "anti_patterns": ["Don't use unittest module", "Don't create test database connections in fixtures yet"]
+  },
+
+  "output_artifacts": [
+    {"type": "file", "path": "backend/pytest.ini", "description": "Pytest configuration"},
+    {"type": "file", "path": "backend/tests/__init__.py", "description": "Tests package init"},
+    {"type": "file", "path": "backend/tests/conftest.py", "description": "Shared fixtures"},
+    {"type": "file", "path": "backend/tests/test_setup.py", "description": "Setup verification tests"}
+  ],
+
+  "execution": {
+    "estimated_complexity": "small",
+    "estimated_tokens": 8000,
+    "max_context_percent": 40,
+    "requires_human_review": false,
+    "background_eligible": true,
+    "parallel_safe": true
+  },
+
+  "tdd_cycle": {
+    "red_phase": {"started_at": "2026-01-12T23:00:00Z", "tests_written": ["backend/tests/test_setup.py"], "tests_failing": false},
+    "green_phase": {"started_at": "2026-01-12T23:05:00Z", "implementation_files": ["backend/pytest.ini", "backend/tests/conftest.py"], "tests_passing": true},
+    "refactor_phase": {"started_at": "2026-01-12T23:10:00Z", "changes_made": ["Code review - no changes needed"], "tests_still_passing": true}
+  },
+
+  "results": {
+    "started_at": "2026-01-12T23:00:00Z",
+    "completed_at": "2026-01-12T23:15:00Z",
+    "attempts": 1,
+    "validation_passed": true,
+    "code_review_passed": true,
+    "notes": "All 14 tests passing. Fixtures work with mocked dependencies.",
+    "learned_patterns": ["Pytest fixture with dependency mocking pattern"]
+  }
+}
